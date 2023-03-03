@@ -1,0 +1,157 @@
+#                                               -*- Autoconf -*-
+# Process this file with autoconf to produce a configure script.
+
+AC_PREREQ([2.71])
+AC_INIT([FULL-PACKAGE-NAME], [VERSION], [BUG-REPORT-ADDRESS])
+AC_CONFIG_SRCDIR([target/libgpg-error/lock-obj-pub.aarch64-unknown-linux-android.h])
+AC_CONFIG_HEADERS([config.h])
+
+# Checks for programs.
+AC_PROG_CXX
+AC_PROG_AWK
+AC_PROG_CC
+AC_PROG_CPP
+AC_PROG_INSTALL
+AC_PROG_LN_S
+AC_PROG_MAKE_SET
+
+# Checks for libraries.
+# FIXME: Replace 'main' with a function in '-liconv':
+AC_CHECK_LIB([iconv], [main])
+# FIXME: Replace 'main' with a function in '-lm':
+AC_CHECK_LIB([m], [main])
+
+# Checks for header files.
+
+# Checks for typedefs, structures, and compiler characteristics.
+
+# Checks for library functions.
+
+AC_CONFIG_FILES([Makefile
+                 native/JsonSchemaBuilder/Makefile
+                 native/Makefile
+                 native/Mako/Makefile
+                 native/MarkupSafe/Makefile
+                 native/TexturePacker/Makefile
+                 native/autoconf-archive/Makefile
+                 native/autoconf/Makefile
+                 native/automake/Makefile
+                 native/cmake/Makefile
+                 native/dpkg/Makefile
+                 native/expat/Makefile
+                 native/flatbuffers/Makefile
+                 native/gas-preprocessor/Makefile
+                 native/gettext/Makefile
+                 native/giflib/Makefile
+                 native/heimdal/Makefile
+                 native/ldid/Makefile
+                 native/libffi/Makefile
+                 native/libjpeg-turbo/Makefile
+                 native/liblzo2/Makefile
+                 native/libpng/Makefile
+                 native/libtool/Makefile
+                 native/m4/Makefile
+                 native/meson/Makefile
+                 native/nasm/Makefile
+                 native/ninja/Makefile
+                 native/openssl/Makefile
+                 native/pcre/Makefile
+                 native/perlmodule-parseyapp/Makefile
+                 native/pkg-config/Makefile
+                 native/pugixml/Makefile
+                 native/python3/Makefile
+                 native/swig/Makefile
+                 native/tar/Makefile
+                 native/wayland-scanner/Makefile
+                 native/waylandpp-scanner/Makefile
+                 native/xz/Makefile
+                 native/zlib/Makefile
+                 pre-depends/autoconf-pre-depends/Makefile
+                 pre-depends/m4-pre-depends/Makefile
+                 target/Makefile
+                 target/alsa-lib/Makefile
+                 target/binary-addons/Makefile
+                 target/boblight/Makefile
+                 target/bzip2/Makefile
+                 target/cmakebuildsys/Makefile
+                 target/crossguid/Makefile
+                 target/curl/Makefile
+                 target/darwin-embedded-entitlements/Makefile
+                 target/dav1d/Makefile
+                 target/dbus/Makefile
+                 target/dummy-libxbmc/Makefile
+                 target/expat/Makefile
+                 target/ffmpeg/Makefile
+                 target/flatbuffers/Makefile
+                 target/fmt/Makefile
+                 target/fontconfig/Makefile
+                 target/freetype2-noharfbuzz/Makefile
+                 target/freetype2/Makefile
+                 target/fribidi/Makefile
+                 target/fstrcmp/Makefile
+                 target/gettext/Makefile
+                 target/gmp/Makefile
+                 target/gnutls/Makefile
+                 target/gtest/Makefile
+                 target/harfbuzz/Makefile
+                 target/libandroidjni/Makefile
+                 target/libass/Makefile
+                 target/libbluray/Makefile
+                 target/libcdio-gplv3/Makefile
+                 target/libcdio/Makefile
+                 target/libcec/Makefile
+                 target/libdrm/Makefile
+                 target/libdvdcss/Makefile
+                 target/libdvdnav/Makefile
+                 target/libdvdread/Makefile
+                 target/libevdev/Makefile
+                 target/libffi/Makefile
+                 target/libgcrypt/Makefile
+                 target/libgpg-error/Makefile
+                 target/libiconv/Makefile
+                 target/libinput/Makefile
+                 target/libjpeg-turbo/Makefile
+                 target/liblzo2/Makefile
+                 target/libmicrohttpd/Makefile
+                 target/libnfs/Makefile
+                 target/libplist/Makefile
+                 target/libpng/Makefile
+                 target/libsdl/Makefile
+                 target/libshairplay/Makefile
+                 target/libudev/Makefile
+                 target/libusb/Makefile
+                 target/libuuid/Makefile
+                 target/libva/Makefile
+                 target/libxkbcommon/Makefile
+                 target/libxml2/Makefile
+                 target/libxslt/Makefile
+                 target/libzip/Makefile
+                 target/mariadb/Makefile
+                 target/mesa/Makefile
+                 target/mtdev/Makefile
+                 target/nettle/Makefile
+                 target/nghttp2/Makefile
+                 target/openssl/Makefile
+                 target/p8-platform/Makefile
+                 target/pcre/Makefile
+                 target/pipewire/Makefile
+                 target/python3/Makefile
+                 target/pythonmodule-pil/Makefile
+                 target/pythonmodule-pycryptodome/Makefile
+                 target/pythonmodule-setuptools/Makefile
+                 target/rapidjson/Makefile
+                 target/samba-gplv3/Makefile
+                 target/samba/Makefile
+                 target/spdlog/Makefile
+                 target/sqlite3/Makefile
+                 target/taglib/Makefile
+                 target/tinyxml/Makefile
+                 target/udfread/Makefile
+                 target/wayland-protocols/Makefile
+                 target/wayland/Makefile
+                 target/waylandpp/Makefile
+                 target/xz/Makefile
+                 target/zlib/Makefile])
+AC_CONFIG_SUBDIRS([native/JsonSchemaBuilder/src
+                   native/TexturePacker/src])
+AC_OUTPUT

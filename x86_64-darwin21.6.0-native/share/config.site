@@ -1,0 +1,26 @@
+LD="${LD:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld}"
+CC="${CC:- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang}"
+CXX="${CXX:- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++}"
+AR="${AR:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar}"
+RANLIB="${RANLIB:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib}"
+AS="${AS:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as}"
+NM="${NM:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm}"
+STRIP="${STRIP:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip}"
+READELF="${READELF:-}"
+OBJDUMP="${OBJDUMP:-/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump}"
+
+CFLAGS="-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/redd/kodi/x86_64-darwin21.6.0-native/include $CFLAGS"
+LDFLAGS="-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -L/Users/redd/kodi/x86_64-darwin21.6.0-native/lib $LDFLAGS"
+CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/redd/kodi/x86_64-darwin21.6.0-native/include $CPPFLAGS"
+CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/redd/kodi/x86_64-darwin21.6.0-native/include $CXXFLAGS"
+
+PKG_CONFIG=/Users/redd/kodi/x86_64-darwin21.6.0-native/bin/pkg-config
+export PKG_CONFIG_LIBDIR=/Users/redd/kodi/x86_64-darwin21.6.0-native/lib/pkgconfig
+
+PATH=/Users/redd/kodi/x86_64-darwin21.6.0-native/bin:$PATH
+if test -n "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"; then
+  PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bin:$PATH
+fi
+
+LD_LIBRARY_PATH=/Users/redd/kodi/x86_64-darwin21.6.0-native/lib:$LD_LIBRARY_PATH
+NASM=/Users/redd/kodi/x86_64-darwin21.6.0-native/bin/nasm

@@ -1,0 +1,22 @@
+=head2 Wed Mar  1 05:41:10 2023: C<Module> L<Parse::Yapp|Parse::Yapp>
+
+=over 4
+
+=item *
+
+C<installed into: /Users/redd/kodi/x86_64-darwin21.6.0-native/lib/perl5/site_perl>
+
+=item *
+
+C<LINKTYPE: dynamic>
+
+=item *
+
+C<VERSION: 1.21>
+
+=item *
+
+C<EXE_FILES: yapp>
+
+=back
+

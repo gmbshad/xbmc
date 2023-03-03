@@ -216,7 +216,7 @@ OR
 
 (2) Build specific add-ons:
 ```
-make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="audioencoder.flac pvr.vdr.vnsi audiodecoder.snesapu"
+make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="audioencoder.flac audioencoder.wav pvr.* audioencoder.kodi.builtin.aac game.libretro"
 ```
 OR
 
@@ -238,7 +238,7 @@ mkdir $HOME/kodi-build
 ```
 Generate Xcode project as per configure command in **[Configure and build tools and dependencies](#4-configure-and-build-tools-and-dependencies)**:
 ```
-make -C tools/depends/target/cmakebuildsys BUILD_DIR=$HOME/kodi-build GEN=Xcode
+ope
 ```
 
 To explicitly select the windowing/input system to use do the following (default is to use SDL if not provided)
@@ -260,7 +260,7 @@ cd $HOME/kodi-build
 
 Generate Xcode project (x86_64 intel):
 ```
-/Users/Shared/xbmc-depends/x86_64-darwin17.5.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx10.13_x86_64-target-debug/share/Toolchain.cmake ../kodi
+/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/cmake -G Xcode -DCMAKE_TOOLCHAIN_FILE=/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/share/Toolchain.cmake ../kodi
 ```
 
 **WARNING:** The toolchain file location differs depending on SDK version. You have to replace `x86_64-darwin17.5.0-native` and `macosx10.13_x86_64-target-debug` in the paths above with the correct ones on your system.

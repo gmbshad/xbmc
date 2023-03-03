@@ -1,0 +1,26 @@
+[binaries]
+c = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang'
+cpp = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++'
+ar = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar'
+strip = '/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip'
+pkgconfig = '/Users/redd/kodi/x86_64-darwin21.6.0-native/bin/pkg-config'
+
+[host_machine]
+system = 'darwin'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[properties]
+pkg_config_libdir = '/Users/redd/kodi/macosx13.0_x86_64-target-debug/lib/pkgconfig'
+
+[built-in options]
+c_args = ['-fheinous-gnu-extensions', '-D_DEBUG', '-arch', 'x86_64', '-mmacosx-version-min=10.13', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk', '-isystem', '/Users/redd/kodi/macosx13.0_x86_64-target-debug/include']
+c_link_args = ['-L/Users/redd/kodi/macosx13.0_x86_64-target-debug/lib', '-Wl,-search_paths_first', '-arch', 'x86_64', '-mmacosx-version-min=10.13', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk', '-stdlib=libc++', '/Users/redd/Documents/ffmpeg/libavcodec', '-liconv']
+cpp_args = ['-stdlib=libc++', '-D_DEBUG', '-std=c++17', '-arch', 'x86_64', '-mmacosx-version-min=10.13', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk', '-isystem', '/Users/redd/kodi/macosx13.0_x86_64-target-debug/include']
+cpp_link_args = ['-L/Users/redd/kodi/macosx13.0_x86_64-target-debug/lib', '-Wl,-search_paths_first', '-arch', 'x86_64', '-mmacosx-version-min=10.13', '-isysroot', '/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk', '-stdlib=libc++', '/Users/redd/Documents/ffmpeg/libavcodec', '-liconv']
+default_library = 'static'
+prefix = '/Users/redd/kodi/macosx13.0_x86_64-target-debug'
+libdir = 'lib'
+bindir = 'bin'
+includedir = 'include'

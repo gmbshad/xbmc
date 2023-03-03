@@ -251,8 +251,8 @@ AC_PATH_PROG([OBJDUMP_FOR_BUILD], [objdump], objdump, $PATH_FOR_BUILD)
 AC_PATH_PROG([CC_FOR_BUILD],[clang gcc llvm-gcc], gcc, $PATH_FOR_BUILD)
 AC_PATH_PROG([CXX_FOR_BUILD],[clang++ g++ llvm-g++], g++, $PATH_FOR_BUILD)
 
-platform_cc=gcc
-platform_cxx=g++
+platform_cc=clang-tidy
+platform_cxx=clang++
 
 case $host in
   *-*linux-android*)

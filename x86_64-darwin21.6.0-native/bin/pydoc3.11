@@ -1,0 +1,5 @@
+#!/Users/redd/kodi/x86_64-darwin21.6.0-native/bin/python3.11
+
+import pydoc
+if __name__ == '__main__':
+    pydoc.cli()
