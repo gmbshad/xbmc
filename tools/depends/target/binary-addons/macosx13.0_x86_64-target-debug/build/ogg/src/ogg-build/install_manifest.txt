@@ -1,0 +1,9 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/libogg.a
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/ogg/config_types.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/ogg/ogg.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/ogg/os_types.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/Ogg/OggTargets.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/Ogg/OggTargets-release.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/Ogg/OggConfig.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/Ogg/OggConfigVersion.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/pkgconfig/ogg.pc

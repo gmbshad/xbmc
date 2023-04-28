@@ -1,0 +1,13 @@
+#!/bin/sh -e
+
+libdir="/Users/redd/kodi/tools/depends/target/nghttp2/macosx13.0_arm64-target-debug/build/lib"
+if [ -d "$libdir/.libs" ]; then
+    libdir="$libdir/.libs"
+fi
+
+export CGO_CFLAGS="-I/Users/redd/kodi/tools/depends/target/nghttp2/macosx13.0_arm64-target-debug/lib/includes -I/Users/redd/kodi/tools/depends/target/nghttp2/macosx13.0_arm64-target-debug/build/lib/includes "
+export CGO_CPPFLAGS=""
+export CGO_LDFLAGS="-L$libdir "
+export LD_LIBRARY_PATH="$libdir"
+export GODEBUG=cgocheck=0
+"$@"

@@ -1,0 +1,8 @@
+/Users/redd/kodi/addons/.//pvr.freebox/icon.png
+/Users/redd/kodi/addons/.//pvr.freebox/resources/settings.xml
+/Users/redd/kodi/addons/.//pvr.freebox/resources/language/resource.language.fr_fr/strings.po
+/Users/redd/kodi/addons/.//pvr.freebox/resources/language/resource.language.en_gb/strings.po
+/Users/redd/kodi/addons/.//pvr.freebox/addon.xml
+/Users/redd/kodi/addons/pvr.freebox/pvr.freebox.21.0.0.dylib
+/Users/redd/kodi/addons/pvr.freebox/pvr.freebox.21.0.dylib
+/Users/redd/kodi/addons/pvr.freebox/pvr.freebox.dylib

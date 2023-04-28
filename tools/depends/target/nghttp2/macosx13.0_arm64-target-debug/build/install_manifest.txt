@@ -1,0 +1,10 @@
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/doc/nghttp2/README.rst
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/lib/libnghttp2.a
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/lib/pkgconfig/libnghttp2.pc
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/include/nghttp2/nghttp2.h
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/include/nghttp2/nghttp2ver.h
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/man/man1/nghttp.1
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/man/man1/nghttpd.1
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/man/man1/nghttpx.1
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/man/man1/h2load.1
+/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/share/nghttp2/fetch-ocsp-response

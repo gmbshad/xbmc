@@ -1,0 +1,127 @@
+abs_top_srcdir=/Users/redd/kodi/tools/depends
+
+DEBUG_BUILD=yes
+TOOLCHAIN=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin
+NDKROOT=
+SDKROOT=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk
+CMAKE_SOURCE_DIR=$(abspath $(abs_top_srcdir)/../../)
+TARBALLS_LOCATION=/Users/Shared/xbmc-depends/xbmc-tarballs
+PLATFORM=macosx13.0_x86_64-target-debug
+HOST=x86_64-apple-darwin
+BUILD=x86_64-apple-darwin21.6.0
+BUILD_CPU=x86_64
+CPU=x86_64
+MESON_CPU=x86_64
+MESON_SYSTEM=darwin
+NATIVEPLATFORM=x86_64-osx-native
+NDK_LEVEL=21
+RETRIEVE_TOOL=/usr/bin/curl
+ARCHIVE_TOOL=/usr/bin/tar
+PREFIX=/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug
+NATIVEPREFIX=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native
+OS=osx
+NATIVE_OS=osx
+CROSS_COMPILING=yes
+ARCH_DEFINES=-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX
+NATIVE_ARCH_DEFINES=-DTARGET_POSIX -DTARGET_DARWIN -DTARGET_DARWIN_OSX
+TARGET_PLATFORM=macosx
+RENDER_SYSTEM=
+WINDOW_SYSTEM=sdl
+SHA512SUM=
+SHA256SUM=
+SHASUM=/usr/bin/shasum
+HASH_TOOL_FLAGS=-c --status
+
+HAS_ZLIB=1
+NEED_LIBICONV=
+LINK_ICONV=-liconv
+ENABLE_GPLV3=yes
+
+BASE_URL=http://mirrors.kodi.tv/build-deps/sources
+ifneq ($(KODI_MIRROR),)
+BASE_URL=$(KODI_MIRROR)/build-deps/sources
+endif
+RETRIEVE_TOOL_FLAGS=-LsS --create-dirs --retry 10 --retry-connrefused -O
+ARCHIVE_TOOL_FLAGS=--strip-components=1 -xf
+CONFIG_SUB=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/automake-1.16/config.sub
+CONFIG_GUESS=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/automake-1.16/config.guess
+
+USE_CCACHE=no
+
+LD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld
+ifneq (no,yes)
+  CC=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  CXX=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+  CPP=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -E
+else
+  CC= /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  CXX= /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+  CPP= /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -E
+endif
+AR=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
+RANLIB=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib
+AS=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as
+NM=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm
+STRIP=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip
+READELF=
+OBJDUMP=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump
+
+CMAKE=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/cmake -DCMAKE_TOOLCHAIN_FILE=$(PREFIX)/share/Toolchain.cmake -DCMAKE_INSTALL_PREFIX=$(PREFIX)
+CFLAGS=-fheinous-gnu-extensions -g -D_DEBUG  -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk -isystem /Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/include
+LDFLAGS=-L/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/lib -Wl,-search_paths_first -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk -stdlib=libc++  -liconv 
+CXXFLAGS=-stdlib=libc++ -g -D_DEBUG  -std=c++17 -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk -isystem /Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/include
+CPPFLAGS=-fheinous-gnu-extensions -g -D_DEBUG  -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk -isystem /Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/include
+# set configured FFmpeg configure options
+FFMPEG_CONFIGURE_OPTIONS=
+
+
+ifneq (/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin,)
+  PATH:=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/usr/bin:$(PATH)
+endif
+PATH:=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin:$(PATH)
+LD_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld
+CC_BINARY_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+CXX_BINARY_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+ifneq (no,yes)
+  CC_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  CXX_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+else
+  CC_FOR_BUILD= /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+  CXX_FOR_BUILD= /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++
+  CCACHE=
+endif
+AR_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar
+RANLIB_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib
+AS_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as
+NM_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm
+STRIP_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip
+READELF_FOR_BUILD=
+OBJDUMP_FOR_BUILD=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump
+
+NATIVE_CFLAGS=-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/include
+NATIVE_LDFLAGS=-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -L/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/lib
+NATIVE_CPPFLAGS=-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/include
+NATIVE_CXXFLAGS=-arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk -I/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/include
+
+VERSION.TXT := $(CMAKE_SOURCE_DIR)/version.txt
+APP_NAME=$(shell awk '/APP_NAME/ {print tolower($$2)}' $(VERSION.TXT))
+
+# Python related vars
+PYTHON_VERSION=3.11
+PYTHON_SITE_PKG=/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/lib/python${PYTHON_VERSION}/site-packages
+
+ifeq ($(CPU), arm64)
+  export GASPP_FIX_XCODE5=1
+endif
+export AUTOM4TE=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/autom4te
+export AUTOMAKE=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/automake
+export AUTOCONF=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/autoconf
+export ACLOCAL=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/aclocal
+export ACLOCAL_PATH=/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/share/aclocal:/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/aclocal
+export AUTOPOINT=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/autopoint
+export AUTOHEADER=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/autoheader
+export LIBTOOL=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/libtool
+export LIBTOOLIZE=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/libtoolize
+
+export AUTORECONF=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/autoreconf
+export JSON_BUILDER=$(NATIVEPREFIX)/bin/JsonSchemaBuilder

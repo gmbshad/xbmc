@@ -1,0 +1,3 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/tinystr.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/tinyxml.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/libtinyxml.a

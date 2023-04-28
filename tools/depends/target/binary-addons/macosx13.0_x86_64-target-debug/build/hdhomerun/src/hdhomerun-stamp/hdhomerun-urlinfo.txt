@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://github.com/Silicondust/libhdhomerun/archive/7c54382fb681d03888b469033e50bebaf4ce6bce.tar.gz'
+tag='SHA256=d686f88b8dc6089e2cb3829958170d6ba02ecc4f2c5f2cfe3fd37e0dda76ce42'

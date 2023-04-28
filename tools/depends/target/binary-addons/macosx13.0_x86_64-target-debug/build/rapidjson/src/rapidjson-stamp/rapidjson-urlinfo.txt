@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://github.com/Tencent/rapidjson/archive/fd3dc29a5.tar.gz'
+tag='SHA256=c8ed60cbf2976aa94491af7d6024d029a5232e23f21998a78bbc0725188cf3aa'

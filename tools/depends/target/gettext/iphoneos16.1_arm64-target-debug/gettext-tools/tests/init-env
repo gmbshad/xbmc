@@ -1,0 +1,66 @@
+# Variable needed by LTLIBINTL.
+top_builddir=../..
+
+OBJEXT="o"
+EXEEXT=""
+CC=" /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+CFLAGS="-fheinous-gnu-extensions -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 -g -D_DEBUG  -arch arm64 -miphoneos-version-min=11.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk -isystem /Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include "
+CXX=" /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+CXXFLAGS="-stdlib=libc++ -g -D_DEBUG  -std=c++17 -arch arm64 -miphoneos-version-min=11.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk -isystem /Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include "
+CPPFLAGS="-fheinous-gnu-extensions -ftree-vectorize -pipe -Wno-trigraphs -fpascal-strings -Wreturn-type -Wunused-variable -fmessage-length=0 -gdwarf-2 -g -D_DEBUG  -arch arm64 -miphoneos-version-min=11.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk -isystem /Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include "
+LDFLAGS="-L/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib -Wl,-search_paths_first -L/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk/usr/lib -arch arm64 -miphoneos-version-min=11.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk -stdlib=libc++  -liconv  "
+LTLIBINTL="${top_builddir}/intl/libintl.la   -Wl,-framework -Wl,CoreFoundation"
+JAVA_CHOICE="no"
+BUILDJAVA="no"
+TESTJAVA="no"
+CSHARP_CHOICE="no"
+BUILDCSHARP="no"
+TESTCSHARP="no"
+TESTLIBASPRINTF="no"
+GLIBC2="no"
+LOCALE_FR="none"
+LOCALE_FR_UTF8="none"
+LOCALE_JA="ja_JP.eucJP"
+LOCALE_DE_UTF8="none"
+host_os="darwin"
+ARCHIVE_VERSION="0.21"
+
+# For specific filename variables, define a variant that - in mingw builds
+# in a Cygwin environment - has the Windows filename syntax.
+wabs_srcdir="$abs_srcdir"
+wabs_top_srcdir="$abs_top_srcdir"
+case "$host_os" in
+  mingw*)
+    if (cygpath --version) >/dev/null 2>/dev/null; then
+      wabs_srcdir=`cygpath -w "$abs_srcdir"`
+      wabs_top_srcdir=`cygpath -w "$abs_top_srcdir"`
+    fi
+    ;;
+esac
+
+# Variable needed by xgettext.
+GETTEXTDATADIR="$wabs_top_srcdir"
+export GETTEXTDATADIR
+
+# Variable needed for checking output with --color.
+GETTEXTSTYLESDIR="$GETTEXTDATADIR/styles"
+export GETTEXTSTYLESDIR
+
+: ${GETTEXT=tstgettext}
+: ${NGETTEXT=tstngettext}
+: ${XGETTEXT=xgettext}
+: ${MSGATTRIB=msgattrib}
+: ${MSGCAT=msgcat}
+: ${MSGCMP=msgcmp}
+: ${MSGCOMM=msgcomm}
+: ${MSGCONV=msgconv}
+: ${MSGEN=msgen}
+: ${MSGEXEC=msgexec}
+: ${MSGFILTER=msgfilter}
+: ${MSGFMT=msgfmt}
+: ${MSGGREP=msggrep}
+: ${MSGINIT=msginit}
+: ${MSGMERGE=msgmerge}
+: ${MSGUNFMT=msgunfmt}
+: ${MSGUNIQ=msguniq}
+: ${RECODE=recode}

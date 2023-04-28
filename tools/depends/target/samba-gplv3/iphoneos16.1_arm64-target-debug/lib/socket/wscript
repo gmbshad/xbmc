@@ -1,0 +1,8 @@
+#!/usr/bin/env python
+
+def configure(conf):
+    conf.CHECK_HEADERS('linux/sockios.h linux/ethtool.h')
+    if (conf.CONFIG_SET('HAVE_LINUX_SOCKIOS_H') and \
+                    conf.CONFIG_SET('HAVE_LINUX_ETHTOOL_H')):
+        if conf.CHECK_FUNCS('ethtool_cmd_speed', headers='linux/sockios.h linux/ethtool.h'):
+            conf.DEFINE('HAVE_ETHTOOL', 1)

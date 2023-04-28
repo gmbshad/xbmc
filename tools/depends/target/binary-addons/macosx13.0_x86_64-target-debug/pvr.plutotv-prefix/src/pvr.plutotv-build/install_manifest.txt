@@ -1,0 +1,12 @@
+/Users/redd/kodi/addons/.//pvr.plutotv/icon.png
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/screenshots/screenshot-02.jpg
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/screenshots/screenshot-03.jpg
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/screenshots/screenshot-01.jpg
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/settings.xml
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/language/resource.language.de_de/strings.po
+/Users/redd/kodi/addons/.//pvr.plutotv/resources/language/resource.language.en_gb/strings.po
+/Users/redd/kodi/addons/.//pvr.plutotv/changelog.txt
+/Users/redd/kodi/addons/.//pvr.plutotv/addon.xml
+/Users/redd/kodi/addons/pvr.plutotv/pvr.plutotv.21.0.0.dylib
+/Users/redd/kodi/addons/pvr.plutotv/pvr.plutotv.21.0.dylib
+/Users/redd/kodi/addons/pvr.plutotv/pvr.plutotv.dylib

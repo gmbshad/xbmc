@@ -1,0 +1,16 @@
+[Unit]
+Description=Samba Winbind Daemon
+Documentation=man:winbindd(8) man:samba(7) man:smb.conf(5)
+After=network.target nmb.service
+
+[Service]
+Type=notify
+PIDFile=/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/var/run/samba/winbindd.pid
+EnvironmentFile=-/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/etc/sysconfig/samba
+ExecStart=/Users/Shared/xbmc-depends/macosx13.0_arm64-target-debug/sbin/winbindd --foreground --no-process-group $WINBINDOPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+LimitCORE=infinity
+
+
+[Install]
+WantedBy=multi-user.target

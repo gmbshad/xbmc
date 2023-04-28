@@ -1,0 +1,7 @@
+/Users/redd/kodi/addons/.//pvr.octonet/resources/settings.xml
+/Users/redd/kodi/addons/.//pvr.octonet/resources/language/resource.language.de_de/strings.po
+/Users/redd/kodi/addons/.//pvr.octonet/resources/language/resource.language.en_gb/strings.po
+/Users/redd/kodi/addons/.//pvr.octonet/addon.xml
+/Users/redd/kodi/addons/pvr.octonet/pvr.octonet.20.3.0.dylib
+/Users/redd/kodi/addons/pvr.octonet/pvr.octonet.21.0.dylib
+/Users/redd/kodi/addons/pvr.octonet/pvr.octonet.dylib

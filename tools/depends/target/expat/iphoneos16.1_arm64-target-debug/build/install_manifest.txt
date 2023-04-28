@@ -1,0 +1,11 @@
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include/expat_config.h
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/libexpat.a
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include/expat.h
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/include/expat_external.h
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/pkgconfig/expat.pc
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/share/doc/expat/AUTHORS
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/share/doc/expat/changelog
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/cmake/expat-2.4.9/expat-config.cmake
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/cmake/expat-2.4.9/expat-config-version.cmake
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/cmake/expat-2.4.9/expat.cmake
+/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug/lib/cmake/expat-2.4.9/expat-noconfig.cmake

@@ -1,0 +1,5 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/librcheevoslib.a
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/rcheevos/rcheevos.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/rcheevos/rconsoles.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/rcheevos/rhash.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/rcheevos/rurl.h

@@ -141,8 +141,6 @@ int __wrap_close(int fd)
 {
    return dll_close(fd);
 }
-
-ssize_t __wrap_write(int fd, const void *buf, size_t count)
 {
   return dll_write(fd, buf, count);
 }

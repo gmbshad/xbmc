@@ -1,0 +1,6 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/libpugixml.a
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/pugixml.hpp
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/pugiconfig.hpp
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/pugixml/pugixml-config.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/pugixml/pugixml-config-release.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/pkgconfig/pugixml.pc

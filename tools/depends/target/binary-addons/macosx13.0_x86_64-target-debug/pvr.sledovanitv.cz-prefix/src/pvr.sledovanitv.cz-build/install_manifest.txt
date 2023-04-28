@@ -1,0 +1,10 @@
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/settings.xml
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/language/resource.language.en_gb/strings.po
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/language/resource.language.cs_cz/strings.po
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/language/resource.language.sk_sk/strings.po
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/logo.png
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/resources/logo.svg
+/Users/redd/kodi/addons/.//pvr.sledovanitv.cz/addon.xml
+/Users/redd/kodi/addons/pvr.sledovanitv.cz/pvr.sledovanitv.cz.21.0.0.dylib
+/Users/redd/kodi/addons/pvr.sledovanitv.cz/pvr.sledovanitv.cz.21.0.dylib
+/Users/redd/kodi/addons/pvr.sledovanitv.cz/pvr.sledovanitv.cz.dylib

@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addon
+  id="pvr.plutotv"
+  version="21.0.0"
+  name="Pluto.tv PVR Client"
+  provider-name="Team Kodi, flubshi">
+  <requires>
+<import addon="kodi.binary.global.main" minversion="2.0.0" version="2.0.2"/>
+<import addon="kodi.binary.global.filesystem" minversion="1.1.7" version="1.1.8"/>
+<import addon="kodi.binary.global.tools" minversion="1.0.0" version="1.0.4"/>
+<import addon="kodi.binary.instance.pvr" minversion="8.2.0" version="8.2.0"/>
+    <import addon="script.module.inputstreamhelper" version="21.0.0"/>
+    <import addon="inputstream.adaptive" minversion="21.0.0"/>
+  </requires>
+  <extension
+    point="kodi.pvrclient"
+    library_osx="pvr.plutotv.21.0.0.dylib"/>
+  <extension point="xbmc.addon.metadata">
+    <platform>osx-x86_64</platform>
+    <license>GPL-2.0-or-later</license>
+    <source>https://github.com/kodi-pvr/pvr.plutotv</source>
+    <forum>https://forum.kodi.tv/forumdisplay.php?fid=167</forum>
+    <assets>
+      <icon>icon.png</icon>
+      <screenshot>resources/screenshots/screenshot-01.jpg</screenshot>
+      <screenshot>resources/screenshots/screenshot-02.jpg</screenshot>
+      <screenshot>resources/screenshots/screenshot-03.jpg</screenshot>
+    </assets>
+    <summary lang="de_DE">Pluto.tv PVR Client</summary>
+    <summary lang="en_GB">Pluto.tv PVR Client</summary>
+    <description lang="de_DE">Pluto.tv PVR Client. Hinweis: Dies ist kein offizielles Pluto.tv-Addon und steht nicht in Verbindung zu Pluto.tv. Es wurde von Freiwilligen entwickelt.</description>
+    <description lang="en_GB">Pluto.tv PVR Client. Note: This is not an official pluto.tv add-on and not related to pluto.tv. It was developed by volunteers.</description>
+  </extension>
+</addon>

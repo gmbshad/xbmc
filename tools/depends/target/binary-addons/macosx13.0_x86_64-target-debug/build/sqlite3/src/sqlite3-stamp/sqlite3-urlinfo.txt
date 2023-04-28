@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://www.sqlite.org/2022/sqlite-autoconf-3380300.tar.gz'
+tag='SHA256=61f2dd93a2e38c33468b7125967c3218bf9f4dd8365def6025e314f905dc942e'

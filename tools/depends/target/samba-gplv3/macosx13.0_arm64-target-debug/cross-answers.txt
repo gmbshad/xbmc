@@ -1,0 +1,26 @@
+Checking uname sysname type: UNKNOWN
+Checking uname machine type: UNKNOWN
+Checking uname release type: UNKNOWN
+Checking uname version type: UNKNOWN
+Checking getconf LFS_CFLAGS: UNKNOWN
+Checking correct behavior of strtoll: UNKNOWN
+Checking for HAVE_SHARED_MMAP: UNKNOWN
+Checking for HAVE_INCOHERENT_MMAP: UNKNOWN
+Checking value of NSIG: UNKNOWN
+Checking for a 64-bit host to support lmdb: UNKNOWN
+Checking value of GNUTLS_CIPHER_AES_128_CFB8: UNKNOWN
+Checking value of GNUTLS_MAC_AES_CMAC_128: UNKNOWN
+Checking for *bsd style statfs with statfs.f_iosize: UNKNOWN
+Checking errno of iconv for illegal multibyte sequence: UNKNOWN
+Checking for kernel share modes: UNKNOWN
+Checking if can we convert from CP850 to UCS-2LE: UNKNOWN
+Checking if can we convert from IBM850 to UCS-2LE: UNKNOWN
+Checking if can we convert from UTF-8 to UCS-2LE: UNKNOWN
+Checking if can we convert from UTF8 to UCS-2LE: UNKNOWN
+Checking for the maximum value of the 'time_t' type: UNKNOWN
+Checking whether the realpath function allows a NULL argument: UNKNOWN
+Checking for ftruncate extend: UNKNOWN
+Checking for readlink breakage: UNKNOWN
+getcwd takes a NULL argument: UNKNOWN
+checking for clnt_create(): UNKNOWN
+for QUOTACTL_4B:  int quotactl(const char *path, int cmd, int id, char *addr): UNKNOWN

@@ -1,0 +1,12 @@
+/Users/redd/kodi/addons/.//pvr.teleboy/icon.png
+/Users/redd/kodi/addons/.//pvr.teleboy/resources/settings.xml
+/Users/redd/kodi/addons/.//pvr.teleboy/resources/language/resource.language.de_de/strings.po
+/Users/redd/kodi/addons/.//pvr.teleboy/resources/language/resource.language.en_gb/strings.po
+/Users/redd/kodi/addons/.//pvr.teleboy/resources/eit_categories.txt
+/Users/redd/kodi/addons/.//pvr.teleboy/fanart.jpg
+/Users/redd/kodi/addons/.//pvr.teleboy/changelog.txt
+/Users/redd/kodi/addons/.//pvr.teleboy/LICENSE.txt
+/Users/redd/kodi/addons/.//pvr.teleboy/addon.xml
+/Users/redd/kodi/addons/pvr.teleboy/pvr.teleboy.21.0.0.dylib
+/Users/redd/kodi/addons/pvr.teleboy/pvr.teleboy.21.0.dylib
+/Users/redd/kodi/addons/pvr.teleboy/pvr.teleboy.dylib

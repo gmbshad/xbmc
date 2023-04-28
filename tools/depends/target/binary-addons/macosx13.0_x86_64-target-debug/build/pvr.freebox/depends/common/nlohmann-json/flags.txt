@@ -1,0 +1,1 @@
+-DJSON_BuildTests:BOOL=OFF

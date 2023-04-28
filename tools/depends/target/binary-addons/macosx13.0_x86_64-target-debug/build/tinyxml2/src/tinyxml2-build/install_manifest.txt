@@ -1,0 +1,7 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/libtinyxml2.a
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/tinyxml2/tinyxml2-static-targets.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/tinyxml2/tinyxml2-static-targets-release.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/tinyxml2/tinyxml2-config.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/tinyxml2/tinyxml2-config-version.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/tinyxml2.h
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/pkgconfig/tinyxml2.pc

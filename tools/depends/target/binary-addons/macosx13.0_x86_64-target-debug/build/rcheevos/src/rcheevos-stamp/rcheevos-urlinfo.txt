@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://github.com/RetroAchievements/rcheevos/archive/v9.2.0.tar.gz'
+tag='SHA256=c8ed6ca74f905ea0c256250e46cced579922880001337e7c3d3d68179ad89d4e'

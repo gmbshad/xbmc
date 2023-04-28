@@ -1,0 +1,17 @@
+if not conf.env['FLEX']:
+    conf.fatal("Embedded Heimdal build requires flex but it was not found.  Install flex or use --with-system-mitkrb5 or --with-system-heimdalkrb5")
+
+if not conf.env['BISON']:
+    conf.fatal("Embedded Heimdal build requires bison but it was not found.  Install bison or use --with-system-mitkrb5 or --with-system-heimdalkrb5")
+
+conf.define('USING_EMBEDDED_HEIMDAL', 1)
+conf.RECURSE('source4/heimdal_build')
+
+def check_system_heimdal_binary(name):
+    if not conf.find_program(name, var=name.upper()):
+        raise Exception("not conf.find_program(%s, var=%s)" % (name, name.upper()))
+    conf.define('USING_SYSTEM_%s' % name.upper(), 1)
+    return True
+
+check_system_heimdal_binary("compile_et")
+check_system_heimdal_binary("asn1_compile")

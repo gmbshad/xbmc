@@ -1,0 +1,65 @@
+# This file will be configured to contain variables for CPack. These variables
+# should be set in the CMake list file of the project before CPack module is
+# included. The list of available CPACK_xxx variables and their associated
+# documentation may be obtained using
+#  cpack --help-variable-list
+#
+# Some variables are common to all generators (e.g. CPACK_PACKAGE_NAME)
+# and some are specific to a generator
+# (e.g. CPACK_NSIS_EXTRA_INSTALL_COMMANDS). The generator specific variables
+# usually begin with CPACK_<GENNAME>_xxxx.
+
+
+set(CPACK_BUILD_SOURCE_DIRS "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug;/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/build")
+set(CPACK_CMAKE_GENERATOR "Unix Makefiles")
+set(CPACK_COMPONENTS_ALL "Development;ManPagesDevelopment;SharedLibraries")
+set(CPACK_COMPONENT_UNSPECIFIED_HIDDEN "TRUE")
+set(CPACK_COMPONENT_UNSPECIFIED_REQUIRED "TRUE")
+set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_FILE "/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/cmake-3.21/Templates/CPack.GenericDescription.txt")
+set(CPACK_DEFAULT_PACKAGE_DESCRIPTION_SUMMARY "mariadb-connector-c built using CMake")
+set(CPACK_GENERATOR "TGZ")
+set(CPACK_INSTALL_CMAKE_PROJECTS "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/build;mariadb-connector-c;ALL;/")
+set(CPACK_INSTALL_PREFIX "/Users/Shared/xbmc-depends/iphoneos16.1_arm64-target-debug")
+set(CPACK_MODULE_PATH "")
+set(CPACK_NSIS_DISPLAY_NAME "mariadb_connector_c 3.3.2")
+set(CPACK_NSIS_INSTALLER_ICON_CODE "")
+set(CPACK_NSIS_INSTALLER_MUI_ICON_CODE "")
+set(CPACK_NSIS_INSTALL_ROOT "$PROGRAMFILES")
+set(CPACK_NSIS_PACKAGE_NAME "mariadb_connector_c 3.3.2")
+set(CPACK_NSIS_UNINSTALL_NAME "Uninstall")
+set(CPACK_OSX_SYSROOT "/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.1.sdk")
+set(CPACK_OUTPUT_CONFIG_FILE "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/build/CPackConfig.cmake")
+set(CPACK_PACKAGE_DEFAULT_LOCATION "/")
+set(CPACK_PACKAGE_DESCRIPTION "MariaDB Connector/C. A library for connecting to MariaDB and MySQL servers")
+set(CPACK_PACKAGE_DESCRIPTION_FILE "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/README")
+set(CPACK_PACKAGE_DESCRIPTION_SUMMARY "mariadb-connector-c built using CMake")
+set(CPACK_PACKAGE_FILE_NAME "mariadb-connector-c-3.3.2-darwin-aarch64")
+set(CPACK_PACKAGE_INSTALL_DIRECTORY "mariadb_connector_c 3.3.2")
+set(CPACK_PACKAGE_INSTALL_REGISTRY_KEY "mariadb_connector_c 3.3.2")
+set(CPACK_PACKAGE_NAME "mariadb_connector_c")
+set(CPACK_PACKAGE_RELOCATABLE "true")
+set(CPACK_PACKAGE_VENDOR "MariaDB Corporation Ab")
+set(CPACK_PACKAGE_VERSION "3.3.2")
+set(CPACK_PACKAGE_VERSION_MAJOR "3")
+set(CPACK_PACKAGE_VERSION_MINOR "3")
+set(CPACK_PACKAGE_VERSION_PATCH "2")
+set(CPACK_RESOURCE_FILE_LICENSE "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/COPYING.LIB")
+set(CPACK_RESOURCE_FILE_README "/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/cmake-3.21/Templates/CPack.GenericDescription.txt")
+set(CPACK_RESOURCE_FILE_WELCOME "/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/share/cmake-3.21/Templates/CPack.GenericWelcome.txt")
+set(CPACK_SET_DESTDIR "OFF")
+set(CPACK_SOURCE_GENERATOR "TGZ")
+set(CPACK_SOURCE_IGNORE_FILES "\\.git/;\\.gitignore;\\.gitattributes;CMakeCache\\.txt;cmake_dist\\.cmake;CPackConfig\\.cmake;mariadb_config\\.c$;\\.build/;html/;unittest;/cmake_install.cmake;/CTestTestfile.cmake;/CPackSourceConfig.cmake;/CMakeFiles/;/version_resources/;/_CPack_Packages/;\\.gz$;\\.zip$;mariadb_config/mariadb_config$;/CMakeFiles/;/version_resources/;/_CPack_Packages/;Makefile$;include/my_config\\.h$")
+set(CPACK_SOURCE_OUTPUT_CONFIG_FILE "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/build/CPackSourceConfig.cmake")
+set(CPACK_SOURCE_PACKAGE_FILE_NAME "mariadb-connector-c-3.3.2-src")
+set(CPACK_SYSTEM_NAME "Darwin")
+set(CPACK_THREADS "1")
+set(CPACK_TOPLEVEL_TAG "Darwin")
+set(CPACK_WIX_SIZEOF_VOID_P "8")
+
+if(NOT CPACK_PROPERTIES_FILE)
+  set(CPACK_PROPERTIES_FILE "/Users/redd/kodi/tools/depends/target/mariadb/iphoneos16.1_arm64-target-debug/build/CPackProperties.cmake")
+endif()
+
+if(EXISTS ${CPACK_PROPERTIES_FILE})
+  include(${CPACK_PROPERTIES_FILE})
+endif()

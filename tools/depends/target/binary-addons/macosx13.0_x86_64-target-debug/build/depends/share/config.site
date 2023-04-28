@@ -1,0 +1,96 @@
+if test "yes" = "yes"; then
+cross_compiling=yes
+host=x86_64-apple-darwin
+host_alias=x86_64-apple-darwin
+fi
+
+LD="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld"
+CC=" /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+CXX=" /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+CPP=" /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -E"
+AR="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar"
+AS="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as"
+NM="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm"
+STRIP="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip"
+RANLIB="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib"
+OBJDUMP="/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump"
+
+if test "osx" = "darwin_embedded" ; then
+  export AS="/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/gas-preprocessor.pl /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch x86_64"
+  export CCAS="--tag CC /Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/gas-preprocessor.pl /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch x86_64"
+fi
+
+CFLAGS="-fheinous-gnu-extensions -g -D_DEBUG  -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk $CFLAGS"
+LDFLAGS="-Wl,-search_paths_first -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk -stdlib=libc++  -liconv  $LDFLAGS"
+CXXFLAGS="-stdlib=libc++ -g -D_DEBUG  -std=c++17 -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk $CXXFLAGS"
+CPPFLAGS="-fheinous-gnu-extensions -g -D_DEBUG  -arch x86_64 -mmacosx-version-min=10.13 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX13.0.sdk $CPPFLAGS"
+
+export PKG_CONFIG=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/pkg-config
+export NASM=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin/nasm
+
+PATH=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/usr/bin:/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bin:$PATH
+LD_LIBRARY_PATH=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native/lib:$LD_LIBRARY_PATH
+
+NATIVE_ROOT=/Users/Shared/xbmc-depends/x86_64-darwin21.6.0-native
+
+#curl
+ac_cv_file__dev_urandom=yes
+ac_cv_lib_ssl_SSL_connect=yes
+
+#gettext and libiconv
+gl_cv_header_working_stdint_h=yes
+
+#libcec
+ac_cv_search_dlopen=-ldl
+
+#libgcrypt
+if test "${PACKAGE_NAME}" = "libgcrypt"; then
+  ac_cv_path_GPG_ERROR_CONFIG=/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/bin/gpg-error-config
+  ac_cv_sys_symbol_underscore=no
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+#python
+ac_cv_func_gethostbyname_r=no
+ac_cv_header_sys_un_h=yes
+
+#gnutls
+gl_cv_func_gettimeofday_clobber=no
+
+
+if test "osx" = "android"; then
+  ac_cv_func_srand=yes
+  ac_cv_func_rand=yes
+
+  #python: android doesn't have libutil
+  PYTHON_LDFLAGS="-L/Users/Shared/xbmc-depends/macosx13.0_x86_64-target-debug/lib -lpython${PYTHON_VERSION} -lc -ldl -lm -lexpat -lffi -lintl -lssl -lcrypto"
+
+fi
+
+if test "osx" = "darwin_embedded"; then
+  # tweaks for flac
+  if test "${ac_unique_file}" = "src/flac/main.c" ; then
+    # compiler barfs if we use -O3/O2 for flac
+    export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
+    export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
+  fi
+
+  if test "macosx" = "appletvos"; then
+    ac_cv_func_vfork_works=no
+    ac_cv_func_fork=no
+  fi
+fi
+
+#Fix for older, broken android toolchains
+if test "${PACKAGE_NAME}" = "FreeType" -a "osx" = "android"; then
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+# These libs do not correctly export their symbols. Force them in case
+# -fvisibility=hidden is set.
+if test "${ac_unique_file}" = "src/flac/main.c" || \
+   test "${ac_unique_file}" = "src/framing.c" || \
+   test "${ac_unique_file}" = "src/libdvdcss.c" || \
+   test "${PACKAGE_NAME}" = "libssh2" ; then
+     CFLAGS="$CFLAGS -fvisibility=default"
+fi

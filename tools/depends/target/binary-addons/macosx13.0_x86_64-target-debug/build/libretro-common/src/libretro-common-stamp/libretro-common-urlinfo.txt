@@ -1,0 +1,3 @@
+repository='external project URL'
+module='https://github.com/libretro/libretro-common/archive/50c15a88eb741cbe675743a282d8cc4c89421e3f.tar.gz'
+tag='SHA256=042986fad22dc37188df7a186d17a258edfe8e552353f9b509a47418e8dfa623'

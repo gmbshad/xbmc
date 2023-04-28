@@ -1,0 +1,3 @@
+repository='https://github.com/xbmc/repo-binary-addons.git'
+module=''
+tag='origin'

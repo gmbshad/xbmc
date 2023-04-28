@@ -1,0 +1,5 @@
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/include/nlohmann/json.hpp
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/nlohmann_json/nlohmann_jsonConfig.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/nlohmann_json/nlohmann_jsonConfigVersion.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/cmake/nlohmann_json/nlohmann_jsonTargets.cmake
+/Users/redd/kodi/tools/depends/target/binary-addons/macosx13.0_x86_64-target-debug/build/depends/lib/pkgconfig/nlohmann_json.pc
