@@ -3,10 +3,9 @@
 # -----------
 # Finds the RapidJSON library
 #
-# This will define the following variables::
+# This will define the following target:
 #
-# RapidJSON_FOUND - system has RapidJSON parser
-# RapidJSON_INCLUDE_DIRS - the RapidJSON parser include directory
+#   RapidJSON::RapidJSON - The RapidJSON library
 #
 
 if(NOT TARGET RapidJSON::RapidJSON)
@@ -52,7 +51,8 @@ if(NOT TARGET RapidJSON::RapidJSON)
     endif()
 
     find_path(RAPIDJSON_INCLUDE_DIRS NAMES rapidjson/rapidjson.h
-                                     PATHS ${PC_RapidJSON_INCLUDEDIR})
+                                     PATHS ${PC_RapidJSON_INCLUDEDIR}
+                                     NO_CACHE)
   endif()
 
   include(FindPackageHandleStandardArgs)
@@ -61,18 +61,12 @@ if(NOT TARGET RapidJSON::RapidJSON)
                                     VERSION_VAR RapidJSON_VERSION)
 
   if(RAPIDJSON_FOUND)
-    if(NOT TARGET RapidJSON::RapidJSON)
-      add_library(RapidJSON::RapidJSON INTERFACE IMPORTED)
-
-      set_target_properties(RapidJSON::RapidJSON PROPERTIES
-                                                   FOLDER "External Projects"
-                                                   INTERFACE_INCLUDE_DIRECTORIES "${RAPIDJSON_INCLUDE_DIRS}")
-    endif()
+    add_library(RapidJSON::RapidJSON INTERFACE IMPORTED)
+    set_target_properties(RapidJSON::RapidJSON PROPERTIES
+                                               INTERFACE_INCLUDE_DIRECTORIES "${RAPIDJSON_INCLUDE_DIRS}")
     if(TARGET rapidjson)
       add_dependencies(RapidJSON::RapidJSON rapidjson)
     endif()
     set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP RapidJSON::RapidJSON)
   endif()
-
-  mark_as_advanced(RapidJSON_INCLUDE_DIR)
 endif()

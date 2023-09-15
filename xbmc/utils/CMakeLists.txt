@@ -27,6 +27,7 @@ set(SOURCES ActorProtocol.cpp
             FileOperationJob.cpp
             FileUtils.cpp
             FontUtils.cpp
+            GpuInfo.cpp
             GroupUtils.cpp
             HTMLUtil.cpp
             HttpHeader.cpp
@@ -111,6 +112,7 @@ set(HEADERS ActorProtocol.h
             FontUtils.h
             Geometry.h
             GlobalsHandling.h
+            GpuInfo.h
             GroupUtils.h
             HDRCapabilities.h
             HTMLUtil.h
@@ -183,11 +185,11 @@ set(HEADERS ActorProtocol.h
             XMLUtils.h
             XTimeUtils.h)
 
-if(XSLT_FOUND)
+if(TARGET XSLT::XSLT)
   list(APPEND SOURCES XSLTUtils.cpp)
   list(APPEND HEADERS XSLTUtils.h)
 endif()
-if(EGL_FOUND)
+if(TARGET EGL::EGL)
   list(APPEND SOURCES EGLUtils.cpp
                       EGLFence.cpp)
   list(APPEND HEADERS EGLUtils.h
@@ -230,12 +232,12 @@ if("gbm" IN_LIST CORE_PLATFORM_NAME_LC OR "wayland" IN_LIST CORE_PLATFORM_NAME_L
     list(APPEND HEADERS GBMBufferObject.h)
   endif()
 
-  if(EGL_FOUND)
+  if(TARGET EGL::EGL)
     list(APPEND SOURCES EGLImage.cpp)
     list(APPEND HEADERS EGLImage.h)
   endif()
 
-  if(LIBDRM_FOUND)
+  if(TARGET LIBDRM::LIBDRM)
     list(APPEND SOURCES DRMHelpers.cpp)
     list(APPEND HEADERS DRMHelpers.h)
   endif()
