@@ -125,7 +125,7 @@ sub get_default_sources {
         for my $key ( keys %$sources ) {
             $sources->{$key}->{'Media'} = "/media";
             $sources->{$key}->{'Home'} = "$home";
-            $sources->{$key}->{'Desktop'} = "$home/Desktop";
+            $sources->{$key}->{'Desktop'} = "/Users/redd/Desktop";
             $sources->{$key}->{'Root'} = "/";
         }
     }
@@ -134,7 +134,7 @@ sub get_default_sources {
 
 sub first_app_run() {
     my $home =  get_app_home();
-    if ( ! -f "$home/.setup_complete" ) {
+    if ( ! -f "/Users/redd/.setup_complete" ) {
         return 1;
     }
     return;
@@ -142,7 +142,7 @@ sub first_app_run() {
 
 sub first_app_version_run() {
     my $home =  get_app_home();
-    if ( ! -f "$home/.setup_complete" ) {
+    if ( ! -f "/Users/redd/.setup_complete" ) {
         return 1;
     }
     return;

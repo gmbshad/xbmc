@@ -7,7 +7,11 @@ msgstr ""
 "Project-Id-Version: KODI Main\n"
 "Report-Msgid-Bugs-To: translations@kodi.tv\n"
 "POT-Creation-Date: YEAR-MO-DA HO:MI+ZONE\n"
+<<<<<<< Updated upstream
 "PO-Revision-Date: 2023-06-25 09:43+0000\n"
+=======
+"PO-Revision-Date: 2023-08-25 20:34+0000\n"
+>>>>>>> Stashed changes
 "Last-Translator: Wanilton Campos <campos.wanilton@gmail.com>\n"
 "Language-Team: Portuguese (Brazil) <https://kodi.weblate.cloud/projects/kodi-add-ons-skins/skin-estuary/pt_br/>\n"
 "Language: pt_br\n"
@@ -15,7 +19,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
+<<<<<<< Updated upstream
 "X-Generator: Weblate 4.18\n"
+=======
+"X-Generator: Weblate 4.18.2\n"
+>>>>>>> Stashed changes
 
 msgctxt "Addon Summary"
 msgid "Estuary skin by phil65. (Kodi's default skin)"

@@ -1,0 +1,26 @@
+LD="${LD:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld}"
+CC="${CC:- /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang}"
+CXX="${CXX:- /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++}"
+AR="${AR:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar}"
+RANLIB="${RANLIB:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib}"
+AS="${AS:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as}"
+NM="${NM:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm}"
+STRIP="${STRIP:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip}"
+READELF="${READELF:-}"
+OBJDUMP="${OBJDUMP:-/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump}"
+
+CFLAGS="-arch x86_64 -mmacosx-version-min=10.14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -I/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/include $CFLAGS"
+LDFLAGS="-arch x86_64 -mmacosx-version-min=10.14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -L/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/lib $LDFLAGS"
+CPPFLAGS="-arch x86_64 -mmacosx-version-min=10.14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -I/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/include $CPPFLAGS"
+CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.14 -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX.sdk -I/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/include $CXXFLAGS"
+
+PKG_CONFIG=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/pkg-config
+export PKG_CONFIG_LIBDIR=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/lib/pkgconfig
+
+PATH=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin:$PATH
+if test -n "/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin"; then
+  PATH=/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/usr/bin:/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bin:$PATH
+fi
+
+LD_LIBRARY_PATH=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/lib:$LD_LIBRARY_PATH
+NASM=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/nasm

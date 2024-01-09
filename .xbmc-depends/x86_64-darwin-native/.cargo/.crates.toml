@@ -1,0 +1,7 @@
+[v1]
+"cargo-c 0.9.21+cargo-0.71 (path+file:///Users/redd/kodi/tools/depends/native/cargo-c/x86_64-osx-native)" = [
+    "cargo-capi",
+    "cargo-cbuild",
+    "cargo-cinstall",
+    "cargo-ctest",
+]

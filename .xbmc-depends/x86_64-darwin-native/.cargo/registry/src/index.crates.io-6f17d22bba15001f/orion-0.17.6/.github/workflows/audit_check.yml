@@ -1,0 +1,30 @@
+name: cargo deny (licenses, advisories, sources)
+permissions:
+  contents: read
+  issues: write
+
+on:
+  push:
+    # Check immediately if dependencies are altered
+    paths:
+      - '**/Cargo.toml'
+    # Check also at midnight each day
+  schedule:
+    - cron: '0 0 * * *'
+
+jobs:
+  cargo-deny:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        checks:
+          - advisories
+          - bans licenses sources
+
+    steps:
+    - uses: actions/checkout@3df4ab11eba7bda6032a0b82a6bb43b11571feac
+      with:
+        persist-credentials: false
+    - uses: EmbarkStudios/cargo-deny-action@a50c7d5f86370e02fae8472c398f15a36e517bb8
+      with:
+        command: check ${{ matrix.checks }}

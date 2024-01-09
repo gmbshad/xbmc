@@ -1,0 +1,26 @@
+[binaries]
+c = '/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang'
+cpp = '/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++'
+ar = '/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar'
+strip = '/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip'
+pkgconfig = '/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/pkg-config'
+
+[host_machine]
+system = 'darwin'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[properties]
+pkg_config_libdir = '/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/lib/pkgconfig'
+
+[built-in options]
+c_args = ['-fheinous-gnu-extensions', '-DNDEBUG=1', '-arch', 'x86_64', '-mmacosx-version-min=10.14', '-isysroot', '/Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk', '-isystem', '/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/include']
+c_link_args = ['-L/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/lib', '-Wl,-search_paths_first', '-arch', 'x86_64', '-mmacosx-version-min=10.14', '-isysroot', '/Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk', '-stdlib=libc++', '-liconv']
+cpp_args = ['-stdlib=libc++', '-DNDEBUG=1', '-std=c++17', '-arch', 'x86_64', '-mmacosx-version-min=10.14', '-isysroot', '/Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk', '-isystem', '/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/include']
+cpp_link_args = ['-L/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/lib', '-Wl,-search_paths_first', '-arch', 'x86_64', '-mmacosx-version-min=10.14', '-isysroot', '/Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk', '-stdlib=libc++', '-liconv']
+default_library = 'static'
+prefix = '/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release'
+libdir = 'lib'
+bindir = 'bin'
+includedir = 'include'

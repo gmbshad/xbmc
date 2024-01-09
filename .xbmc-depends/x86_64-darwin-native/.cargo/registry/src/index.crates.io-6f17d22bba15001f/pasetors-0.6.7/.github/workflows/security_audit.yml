@@ -1,0 +1,32 @@
+name: Security Audit
+permissions:
+  contents: read
+on:
+  schedule:
+    - cron: '0 0 * * *' # Midnight of each day
+
+jobs:
+  security_audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9
+        with:
+          persist-credentials: false
+          ref: master
+
+      - name: Install stable toolchain
+        uses: actions-rs/toolchain@16499b5e05bf2e26879000db0c1d13f7e13fa3af
+        with:
+          toolchain: stable
+          override: true
+
+      - name: Install cargo audit
+        run: cargo install cargo-audit
+
+      - name: Run cargo audit
+        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+        with:
+          command: audit
+          args: --deny warnings

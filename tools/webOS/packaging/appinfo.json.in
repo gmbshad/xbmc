@@ -8,5 +8,12 @@
   "icon": "icon.png",
   "largeIcon": "largeIcon.png",
   "splashBackground": "media/splash_webOS.png",
+<<<<<<< Updated upstream
   "spinnerOnLaunch": false
+=======
+  "spinnerOnLaunch": false,
+  "handlesRelaunch": true,
+  "nativeLifeCycleInterfaceVersion": 2,
+  "requiredMemory": 500
+>>>>>>> Stashed changes
 }

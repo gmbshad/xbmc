@@ -1,0 +1,13 @@
+config_version = "1"
+
+[[components]]
+pkg = "cargo"
+target = "x86_64-apple-darwin"
+
+[[components]]
+pkg = "rust-std"
+target = "x86_64-apple-darwin"
+
+[[components]]
+pkg = "rustc"
+target = "x86_64-apple-darwin"

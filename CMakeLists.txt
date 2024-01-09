@@ -26,7 +26,7 @@ set(CORE_BUILD_DIR build)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 message(STATUS "Source directory: ${CMAKE_SOURCE_DIR}")
-message(STATUS "Build directory: ${CMAKE_BINARY_DIR}")
+message(STATUS "Build directory: /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/")
 if(CMAKE_BINARY_DIR STREQUAL CMAKE_SOURCE_DIR)
   message(WARNING "In-source build detected. It is recommended to build out-of-source.")
 endif()
@@ -66,8 +66,12 @@ option(ENABLE_TESTING     "Enable testing support?" ON)
 # Internal Depends - supported on all platforms
 
 # These are required enabled for all CI platforms, and recommended for all builds
+<<<<<<< Updated upstream
 option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" ON)
 option(ENABLE_INTERNAL_RapidJSON "Enable internal rapidjson?" ON)
+=======
+option(ENABLE_INTERNAL_CROSSGUID "Enable internal crossguid?" OFF)
+>>>>>>> Stashed changes
 
 # use ffmpeg from depends or system
 option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
@@ -85,11 +89,11 @@ endif()
 
 # Internal Depends - supported on UNIX platforms
 if(UNIX)
-  option(FFMPEG_PATH        "Path to external ffmpeg?" "")
-  option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" OFF)
-  option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" OFF)
-  option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
-  option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
+  option(FFMPEG_PATH        "Path to external ffmpeg?" "/Users/redd/Documents/Develop/ffmpeg/ffmpeg")
+  option(ENABLE_INTERNAL_FSTRCMP "Enable internal fstrcmp?" ON)
+  option(ENABLE_INTERNAL_DAV1D "Enable internal dav1d?" ON)
+  option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" ON)
+  option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" ON)
 endif()
 # prefer kissfft from xbmc/contrib but let use system one on unices
 cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
@@ -127,8 +131,8 @@ set(INCLUDES ${CMAKE_SOURCE_DIR}
              ${CMAKE_SOURCE_DIR}/xbmc
              ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORM_DIR}
              ${CMAKE_SOURCE_DIR}/xbmc/cores/VideoPlayer
-             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
-             ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include)
+             /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}
+             /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/include)
 
 if (NOT PLATFORMDEFS_DIR STREQUAL "")
   list(APPEND INCLUDES ${CMAKE_SOURCE_DIR}/xbmc/${PLATFORMDEFS_DIR})
@@ -139,6 +143,12 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED QUIET)
 list(APPEND DEPLIBS ${CMAKE_THREAD_LIBS_INIT})
 
+<<<<<<< Updated upstream
+=======
+# Clean any existing generated build dir cmake files
+file(REMOVE /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/ExportFiles.cmake)
+file(REMOVE /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/GeneratedPackSkins.cmake)
+>>>>>>> Stashed changes
 
 foreach(depspec ${PLATFORM_REQUIRED_DEPS})
   # We need to specify ENABLE_${PLATFORM_REQUIRED_DEPS} in order for the
@@ -273,14 +283,14 @@ add_custom_command(OUTPUT ${CORE_BUILD_DIR}/xbmc/CompileInfo.cpp
                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
                                             -DAUDIO_BACKENDS="${AUDIO_BACKENDS_LIST}"
                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
-                                            -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR}
+                                            -DCMAKE_BINARY_DIR=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/
                                             -DARCH_DEFINES="${ARCH_DEFINES}"
                                             -DAPP_SCMID=${APP_SCMID}
                                             -DAPP_COPYRIGHT_YEARS=${APP_COPYRIGHT_YEARS}
                                             -DAPP_BUILD_DATE=${APP_BUILD_DATE}
                                             -DAPP_SHARED_LIBRARY_SUFFIX="${APP_SHARED_LIBRARY_SUFFIX}"
                                             -DPYTHON_VERSION=${PYTHON_VERSION}
-                                            -Dprefix=${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}
+                                            -Dprefix=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}
                                             -DKODI_WEBSERVER_EXTRA_WHITELIST="${KODI_WEBSERVER_EXTRA_WHITELIST}"
                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateVersionedFiles.cmake
                    DEPENDS ${CMAKE_SOURCE_DIR}/version.txt
@@ -327,6 +337,7 @@ copy_files_from_filelist_to_buildtree(${CMAKE_SOURCE_DIR}/cmake/installdata/comm
 list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estuary\;${CMAKE_SOURCE_DIR}")
 list(APPEND SKINS "${CMAKE_SOURCE_DIR}/addons/skin.estouchy\;${CMAKE_SOURCE_DIR}")
 
+<<<<<<< Updated upstream
 # These are skins that are copied into place from the source tree
 foreach(skin ${SKINS})
   list(GET skin 0 dir)
@@ -339,6 +350,11 @@ add_custom_target(pack-skins ALL
 set_target_properties(pack-skins PROPERTIES FOLDER "Build Utilities")
 
 file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/system/players/VideoPlayer)
+=======
+if(NOT ${CORE_SYSTEM_NAME} MATCHES "windows")
+  file(MAKE_DIRECTORY /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//system/players/VideoPlayer)
+endif()
+>>>>>>> Stashed changes
 
 set(LIBCEC_SONAME "${CEC_SONAME}")
 if(NOT CORE_SYSTEM_NAME STREQUAL windows AND NOT CORE_SYSTEM_NAME STREQUAL android AND NOT CORE_SYSTEM_NAME STREQUAL windowsstore)
@@ -360,7 +376,7 @@ if(CORE_SYSTEM_NAME STREQUAL "darwin_embedded")
   # expression only provides a path using $(CONFIGURATION)
   add_library(compileinfo_obj OBJECT IMPORTED)
   set_property(TARGET compileinfo_obj PROPERTY IMPORTED_OBJECTS
-    "${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/compileinfo.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
+    "/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/compileinfo.build/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)/$(OBJECT_FILE_DIR_normal:base)/$(CURRENT_ARCH)/CompileInfo.o"
   )
   add_library(lib${APP_NAME_LC} STATIC)
   add_dependencies(lib${APP_NAME_LC} compileinfo)
@@ -413,6 +429,69 @@ whole_archive(_MAIN_LIBRARIES ${FSTRCMP_LIBRARY} ${core_DEPENDS})
 target_link_libraries(${APP_NAME_LC} ${_MAIN_LIBRARIES} lib${APP_NAME_LC} ${DEPLIBS})
 unset(_MAIN_LIBRARIES)
 
+<<<<<<< Updated upstream
+=======
+if(${CORE_SYSTEM_NAME} MATCHES "windows")
+  set(_bundle_dir $<TARGET_FILE_DIR:${APP_NAME_LC}>)
+else()
+  set(_bundle_dir /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/)
+endif()
+
+# These are skins that are copied into place from the source tree
+set(XBT_SOURCE_FILELIST "")
+foreach(skin ${SKINS})
+  list(GET skin 0 dir)
+  list(GET skin 1 relative)
+  copy_skin_to_buildtree(${dir} ${relative})
+endforeach()
+
+# Generate system addons
+add_custom_target(gen_system_addons
+                    COMMAND ${CMAKE_COMMAND} -DCORE_SOURCE_DIR=${CMAKE_SOURCE_DIR}
+                                             -DCORE_SYSTEM_NAME=${CORE_SYSTEM_NAME}
+                                             -DCORE_PLATFORM_NAME_LC="${CORE_PLATFORM_NAME_LC}"
+                                             -DCORE_BUILD_DIR=${CORE_BUILD_DIR}
+                                             -DCMAKE_BINARY_DIR=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/
+                                             -DBUNDLEDIR=${_bundle_dir}
+                                             -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/GenerateSystemAddons.cmake
+                    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR})
+
+if(_multiconfig_generator)
+  # Generator expressions in add_custom_command(OUTPUT) are only available in cmake 3.20+
+  # we dont really need config aware locations for a single config generator, so we only
+  # set this for multi config generators who all use newer cmake
+  set(CONFIG_VAR $<CONFIG>)
+endif()
+
+# Pack skins and copy to correct build dir (MultiConfig Generator aware)
+add_custom_command(
+  OUTPUT /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp
+  COMMAND ${CMAKE_COMMAND} -DBUNDLEDIR=${_bundle_dir}
+                           -DTEXTUREPACKER_EXECUTABLE=$<TARGET_FILE:TexturePacker::TexturePacker::Executable>
+                           -P /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+  COMMAND ${CMAKE_COMMAND} -E make_directory /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/${CONFIG_VAR}
+  COMMAND ${CMAKE_COMMAND} -E touch /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp
+  DEPENDS /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/GeneratedPackSkins.cmake
+          ${XBT_SOURCE_FILELIST}
+  WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+  COMMENT "Generating skin xbt"
+)
+add_custom_target(gen_skin_pack DEPENDS /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/${CONFIG_VAR}/gen_skin.timestamp)
+
+# Packaging target. This generates system addon, xbt creation, copy files to build tree
+add_custom_target(generate-packaging ALL
+                  DEPENDS TexturePacker::TexturePacker::Executable export-files gen_skin_pack gen_system_addons)
+# Make sure we build any libs before we look to export-files.
+# We may need to export some shared libs/data (eg Python)
+add_dependencies(export-files ${GLOBAL_TARGET_DEPS})
+
+# Add to lib${APP_NAME_LC} solely for Win UWP. msix building doesnt seem to pick up the
+# generated buildtree if we do it later. Other platforms dont care when this happens.
+add_dependencies(lib${APP_NAME_LC} generate-packaging)
+
+set_target_properties(generate-packaging PROPERTIES FOLDER "Build Utilities")
+
+>>>>>>> Stashed changes
 if(WIN32)
   set_target_properties(${APP_NAME_LC} PROPERTIES WIN32_EXECUTABLE ON)
   set_property(DIRECTORY PROPERTY VS_STARTUP_PROJECT ${APP_NAME_LC})
@@ -471,7 +550,7 @@ if(HOST_CAN_EXECUTE_TARGET AND ENABLE_TESTING)
 
   # For testing commit series
   add_custom_target(check-commits ${CMAKE_COMMAND} -P ${CMAKE_SOURCE_DIR}/cmake/scripts/common/CheckCommits.cmake
-                                                   -DCMAKE_BINARY_DIR=${CMAKE_BINARY_DIR})
+                                                   -DCMAKE_BINARY_DIR=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/)
   set_target_properties(check-commits PROPERTIES FOLDER "Build Utilities")
 
   include(${CMAKE_SOURCE_DIR}/cmake/scripts/common/StaticAnalysis.cmake)
@@ -524,7 +603,7 @@ if(CMAKE_GENERATOR STREQUAL "Unix Makefiles")
     set(_cross_args CROSS_COMPILING=yes)
   endif()
   if(NOT CORE_SYSTEM_NAME STREQUAL android)
-    set(_prefix ${CMAKE_BINARY_DIR}/addons)
+    set(_prefix /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//addons)
     set(_extra "CMAKE_EXTRA=-DPACKAGE_ZIP=ON")
   else()
     set(_prefix ${CMAKE_INSTALL_PREFIX})
@@ -543,8 +622,8 @@ file(COPY ${CORE_ADDON_BINDINGS_FILES} ${CORE_ADDON_BINDINGS_DIRS}/
      DESTINATION ${CORE_BUILD_DIR}/include/${APP_NAME_LC}
      REGEX ".txt" EXCLUDE)
 
-set(APP_LIB_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
-set(APP_INCLUDE_DIR ${CMAKE_BINARY_DIR}/${CORE_BUILD_DIR}/include/${APP_NAME_LC})
+set(APP_LIB_DIR /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/lib/${APP_NAME_LC})
+set(APP_INCLUDE_DIR /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin//${CORE_BUILD_DIR}/include/${APP_NAME_LC})
 configure_file(${CMAKE_SOURCE_DIR}/cmake/KodiConfig.cmake.in
                ${CORE_BUILD_DIR}/lib/${APP_NAME_LC}/${APP_NAME}Config.cmake @ONLY)
 configure_file(${CMAKE_SOURCE_DIR}/cmake/scripts/common/AddonHelpers.cmake

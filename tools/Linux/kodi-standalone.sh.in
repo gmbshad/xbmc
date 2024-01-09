@@ -18,6 +18,7 @@
 #  the Free Software Foundation, 675 Mass Ave, Cambridge, MA 02139, USA.
 #  http://www.gnu.org/copyleft/gpl.html
 
+APP=@APP_NAME@
 prefix="@prefix@"
 exec_prefix="@exec_prefix@"
 bindir="@bindir@"
@@ -30,21 +31,21 @@ LOOP=1
 CRASHCOUNT=0
 LASTSUCCESSFULSTART=$(date +%s)
 
-while [ $LOOP -eq 1 ]
+while [ $(( $LOOP )) = "1" ]
 do
   $APP
   RET=$?
   NOW=$(date +%s)
-  if [ $RET -ge 64 ] && [ $RET -le 66 ] || [ $RET -eq 0 ]; then # clean exit
+  if [ $(( ($RET >= 64 && $RET <=66) || $RET == 0 )) = "1" ]; then # clean exit
     LOOP=0
   else # crash
     DIFF=$((NOW-LASTSUCCESSFULSTART))
-    if [ $DIFF -gt 60 ]; then # Not on startup, ignore
+    if [ $(($DIFF > 60 )) = "1" ]; then # Not on startup, ignore
       LASTSUCESSFULSTART=$NOW
       CRASHCOUNT=0
     else # at startup, look sharp
       CRASHCOUNT=$((CRASHCOUNT+1))
-      if [ $CRASHCOUNT -ge 3 ]; then # Too many, bail out
+      if [ $(($CRASHCOUNT >= 3)) = "1" ]; then # Too many, bail out
         LOOP=0
         echo "${APP} has exited in an unclean state 3 times in the last ${DIFF} seconds."
         echo "Something is probably wrong"

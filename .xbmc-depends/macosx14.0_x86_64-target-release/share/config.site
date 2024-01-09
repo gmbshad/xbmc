@@ -1,0 +1,102 @@
+if test "yes" = "yes"; then
+cross_compiling=yes
+host=x86_64-darwin
+host_alias=x86_64-darwin
+fi
+
+LD="/Users/redd/Library/Python/3.9/bin/pip3"
+CC=" /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang"
+CXX=" /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang++"
+CPP=" /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -E"
+AR="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar"
+AS="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/as"
+NM="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/nm"
+STRIP="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/strip"
+RANLIB="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib"
+OBJDUMP="/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/objdump"
+
+if test "osx" = "darwin_embedded" ; then
+  export AS="/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/gas-preprocessor.pl  /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch x86_64"
+  export CCAS="--tag CC /Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/gas-preprocessor.pl  /Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -arch x86_64"
+fi
+
+ASFLAGS=""
+CFLAGS="-fheinous-gnu-extensions -DNDEBUG=1   -arch x86_64 -mmacosx-version-min=10.14 -isysroot /Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -isystem /Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/include $CFLAGS"
+LDFLAGS="-L/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/lib -Wl,-search_paths_first -arch x86_64 -mmacosx-version-min=10.14 -isysroot /Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -stdlib=libc++  -liconv  $LDFLAGS"
+CXXFLAGS="-stdlib=libc++ -DNDEBUG=1   -std=c++17 -arch x86_64 -mmacosx-version-min=10.14 -isysroot /Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -isystem /Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/include $CXXFLAGS"
+CPPFLAGS="-fheinous-gnu-extensions -DNDEBUG=1   -arch x86_64 -mmacosx-version-min=10.14 -isysroot /Applications/Utilities/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.0.sdk -isystem /Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/include $CPPFLAGS"
+
+export PKG_CONFIG=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/pkg-config
+export PKG_CONFIG_LIBDIR=/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/lib/pkgconfig
+export NASM=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin/nasm
+LIBGCRYPT_CONFIG=/Users/redd/kodi/.xbmc-depends/macosx14.0_x86_64-target-release/bin/libgcrypt-config
+
+PATH=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/bin:/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/usr/bin:/Applications/Utilities/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bin:$PATH
+LD_LIBRARY_PATH=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native/lib:$LD_LIBRARY_PATH
+
+NATIVE_ROOT=/Users/redd/kodi/.xbmc-depends/x86_64-darwin-native
+
+#curl
+ac_cv_file__dev_urandom=yes
+ac_cv_lib_ssl_SSL_connect=yes
+
+#gettext and libiconv
+gl_cv_header_working_stdint_h=yes
+
+#libcec
+ac_cv_search_dlopen=-ldl
+
+#python
+ac_cv_func_gethostbyname_r=no
+ac_cv_header_sys_un_h=yes
+ac_cv_file__dev_ptmx=no
+ac_cv_file__dev_ptc=no
+
+#gnutls
+gl_cv_func_gettimeofday_clobber=no
+
+#wayland
+if test "${PACKAGE_NAME}" = "wayland"; then
+  # wayland insists on building tests which rely on assert, which cannot work with -DNDEBUG
+  # Maybe it would be better not to define -DNDEBUG globally for release builds?
+  export CFLAGS=`echo ${CFLAGS} | sed 's/-DNDEBUG=1//g'`
+  export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-DNDEBUG=1//g'`
+fi
+
+
+if test "osx" = "android"; then
+  ac_cv_func_srand=yes
+  ac_cv_func_rand=yes
+fi
+
+if test "osx" = "darwin_embedded"; then
+  # there is no clock_settime on iOS/tvOS as of latest version 13.X
+  ac_cv_func_clock_settime=no
+
+  # tweaks for flac
+  if test "${ac_unique_file}" = "src/flac/main.c" ; then
+    # compiler barfs if we use -O3/O2 for flac
+    export CFLAGS=`echo ${CFLAGS} | sed 's/-O3/-Os/'`
+    export CPPFLAGS=`echo ${CPPFLAGS} | sed 's/-O3/-Os/'`
+  fi
+fi
+
+if test "macosx" = "appletvos"; then
+  ac_cv_func_sigaltstack=no
+  ac_cv_func_vfork_works=no
+  ac_cv_func_fork=no
+fi
+
+#Fix for older, broken android toolchains
+if test "${PACKAGE_NAME}" = "FreeType" -a "osx" = "android"; then
+  CFLAGS="$CFLAGS -std=gnu99"
+fi
+
+# These libs do not correctly export their symbols. Force them in case
+# -fvisibility=hidden is set.
+if test "${ac_unique_file}" = "src/flac/main.c" || \
+   test "${ac_unique_file}" = "src/framing.c" || \
+   test "${ac_unique_file}" = "src/libdvdcss.c" || \
+   test "${PACKAGE_NAME}" = "libssh2" ; then
+     CFLAGS="$CFLAGS -fvisibility=default"
+fi
