@@ -352,6 +352,12 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   GLint posLoc = renderSystem->GUIShaderGetPos();
   GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
+  GLint matrixUniformLoc = renderSystem->GUIShaderGetMatrix();
+
+  CMatrixGL matrix = glMatrixProject.Get();
+  matrix.MultMatrixf(glMatrixModview.Get());
+  glUniformMatrix4fv(matrixUniformLoc, 1, GL_FALSE, matrix);
 
   // stack object until VBOs will be used
   std::vector<VERTEX> vecVertices(6 * m_vertex.size() / 4);
@@ -380,6 +386,8 @@ void COverlayGlyphGLES::Render(SRenderState& state)
   glEnableVertexAttribArray(posLoc);
   glEnableVertexAttribArray(colLoc);
   glEnableVertexAttribArray(tex0Loc);
+
+  glUniform1f(depthLoc, -1.0f);
 
   glDrawArrays(GL_TRIANGLES, 0, vecVertices.size());
 
@@ -443,6 +451,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
   GLint colLoc = renderSystem->GUIShaderGetCol();
   GLint tex0Loc = renderSystem->GUIShaderGetCoord0();
   GLint uniColLoc = renderSystem->GUIShaderGetUniCol();
+  GLint depthLoc = renderSystem->GUIShaderGetDepth();
 
   GLfloat col[4] = {1.0f, 1.0f, 1.0f, 1.0f};
   GLfloat ver[4][2];
@@ -458,6 +467,7 @@ void COverlayTextureGLES::Render(SRenderState& state)
   glEnableVertexAttribArray(tex0Loc);
 
   glUniform4f(uniColLoc, (col[0]), (col[1]), (col[2]), (col[3]));
+  glUniform1f(depthLoc, 1.0f);
   // Setup vertex position values
   ver[0][0] = ver[3][0] = rd.x1;
   ver[0][1] = ver[1][1] = rd.y1;

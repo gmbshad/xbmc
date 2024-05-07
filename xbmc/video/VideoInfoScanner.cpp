@@ -9,6 +9,7 @@
 #include "VideoInfoScanner.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -42,6 +43,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 #include "video/dialogs/GUIDialogVideoManagerExtras.h"
@@ -54,11 +56,12 @@
 using namespace XFILE;
 using namespace ADDON;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using KODI::UTILITY::CDigest;
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
 
   CVideoInfoScanner::CVideoInfoScanner()
@@ -413,7 +416,7 @@ namespace VIDEO
         break;
 
       // add video extras to library
-      if (foundSomething && !m_ignoreVideoExtras && pItem->IsVideoExtras())
+      if (foundSomething && !m_ignoreVideoExtras && IsVideoExtrasFolder(*pItem))
       {
         if (AddVideoExtras(items, content, pItem->GetPath()))
         {
@@ -721,8 +724,8 @@ namespace VIDEO
                                           CScraperUrl* pURL,
                                           CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
-       (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
+    if (pItem->m_bIsFolder || !IsVideo(*pItem) || pItem->IsNFO() ||
+        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 198, pItem->GetLabel()))
@@ -826,8 +829,8 @@ namespace VIDEO
                                                CScraperUrl* pURL,
                                                CGUIDialogProgress* pDlgProgress)
   {
-    if (pItem->m_bIsFolder || !pItem->IsVideo() || pItem->IsNFO() ||
-       (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
+    if (pItem->m_bIsFolder || !IsVideo(*pItem) || pItem->IsNFO() ||
+        (pItem->IsPlayList() && !URIUtils::HasExtension(pItem->GetPath(), ".strm")))
       return INFO_NOT_NEEDED;
 
     if (ProgressCancelled(pDlgProgress, 20394, pItem->GetLabel()))
@@ -2204,7 +2207,7 @@ namespace VIDEO
         KODI::TIME::FileTime time = pItem->m_dateTime;
         digest.Update(&time, sizeof(KODI::TIME::FileTime));
       }
-      if (pItem->IsVideo() && !pItem->IsPlayList() && !pItem->IsNFO())
+      if (IsVideo(*pItem) && !pItem->IsPlayList() && !pItem->IsNFO())
         count++;
     }
     hash = digest.Finalize();
@@ -2484,8 +2487,9 @@ namespace VIDEO
           const int idVideoVersion = m_database.AddVideoVersionType(
               typeVideoVersion, VideoAssetTypeOwner::AUTO, VideoAssetType::EXTRA);
 
-          m_database.AddExtrasVideoVersion(ContentToVideoDbType(content), dbId, idVideoVersion,
-                                           *item.get());
+          m_database.AddVideoAsset(ContentToVideoDbType(content), dbId, idVideoVersion,
+                                   VideoAssetType::EXTRA, *item.get());
+
           CLog::Log(LOGDEBUG, "VideoInfoScanner: Added video extras {}",
                     CURL::GetRedacted(item->GetPath()));
         },

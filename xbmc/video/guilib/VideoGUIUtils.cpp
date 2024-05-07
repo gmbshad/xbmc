@@ -9,6 +9,7 @@
 #include "VideoGUIUtils.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
@@ -22,6 +23,8 @@
 #include "guilib/GUIComponent.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -35,9 +38,13 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoUtils.h"
 #include "view/GUIViewState.h"
+
+namespace KODI
+{
 
 namespace
 {
@@ -47,7 +54,7 @@ public:
   CAsyncGetItemsForPlaylist(const std::shared_ptr<CFileItem>& item, CFileItemList& queuedItems)
     : m_item(item),
       m_resume((item->GetStartOffset() == STARTOFFSET_RESUME) &&
-               VIDEO_UTILS::GetItemResumeInformation(*item).isResumable),
+               VIDEO::UTILS::GetItemResumeInformation(*item).isResumable),
       m_queuedItems(queuedItems)
   {
   }
@@ -134,7 +141,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   if (item->m_bIsFolder)
   {
     // check if it's a folder with dvd or bluray files, then just add the relevant file
-    const std::string mediapath = item->GetOpticalMediaPath();
+    const std::string mediapath = VIDEO::UTILS::GetOpticalMediaPath(*item);
     if (!mediapath.empty())
     {
       m_queuedItems.Add(std::make_shared<CFileItem>(mediapath, false));
@@ -197,7 +204,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       items.Sort(sortDesc);
     }
 
-    if (items.GetContent().empty() && !items.IsVideoDb() && !items.IsVirtualDirectoryRoot() &&
+    if (items.GetContent().empty() && !VIDEO::IsVideoDb(items) && !items.IsVirtualDirectoryRoot() &&
         !items.IsSourcesPath() && !items.IsLibraryFolder())
     {
       CVideoDatabase db;
@@ -289,7 +296,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // just queue the playlist, it will be expanded on play
     m_queuedItems.Add(item);
   }
-  else if (item->IsInternetStream())
+  else if (NETWORK::IsInternetStream(*item))
   {
     // just queue the internet stream, it will be expanded on play
     m_queuedItems.Add(item);
@@ -299,7 +306,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     // a playable python files
     m_queuedItems.Add(item);
   }
-  else if (item->IsVideoDb())
+  else if (VIDEO::IsVideoDb(*item))
   {
     // this case is needed unless we allow IsVideo() to return true for videodb items,
     // but then we have issues with playlists of videodb items
@@ -307,7 +314,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
     itemCopy->SetStartOffset(item->GetStartOffset());
     m_queuedItems.Add(itemCopy);
   }
-  else if (!item->IsNFO() && item->IsVideo())
+  else if (!item->IsNFO() && VIDEO::IsVideo(*item))
   {
     m_queuedItems.Add(item);
   }
@@ -331,7 +338,7 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 {
   // recursively add items to list
   CFileItemList queuedItems;
-  VIDEO_UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
+  VIDEO::UTILS::GetItemsForPlayList(itemToQueue, queuedItems);
 
   auto& playlistPlayer = CServiceBroker::GetPlaylistPlayer();
   playlistPlayer.ClearPlaylist(PLAYLIST::TYPE_VIDEO);
@@ -364,7 +371,9 @@ void AddItemToPlayListAndPlay(const std::shared_ptr<CFileItem>& itemToQueue,
 
 } // unnamed namespace
 
-namespace VIDEO_UTILS
+} // namespace KODI
+
+namespace KODI::VIDEO::UTILS
 {
 void PlayItem(
     const std::shared_ptr<CFileItem>& itemIn,
@@ -510,7 +519,7 @@ bool IsItemPlayable(const CFileItem& item)
     return true;
 
   // Exclude all music library items
-  if (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/"))
+  if (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/"))
     return false;
 
   // Exclude other components
@@ -553,7 +562,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   if (item.m_bIsFolder &&
-      (item.IsVideoDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/")))
+      (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const XFILE::VIDEODATABASEDIRECTORY::NODE_TYPE node =
@@ -571,7 +580,7 @@ bool IsItemPlayable(const CFileItem& item)
   {
     return true;
   }
-  else if ((!item.m_bIsFolder && item.IsVideo()) || item.IsDVD() || item.IsCDDA())
+  else if ((!item.m_bIsFolder && IsVideo(item)) || item.IsDVD() || MUSIC::IsCDDA(item))
   {
     return true;
   }
@@ -614,4 +623,4 @@ std::string GetResumeString(const CFileItem& item)
   return {};
 }
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

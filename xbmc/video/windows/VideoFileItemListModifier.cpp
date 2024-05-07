@@ -9,6 +9,7 @@
 #include "VideoFileItemListModifier.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/VideoDatabaseDirectory/DirectoryNode.h"
 #include "guilib/LocalizeStrings.h"
@@ -17,14 +18,16 @@
 #include "settings/SettingsComponent.h"
 #include "video/VideoDatabase.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <memory>
 
+using namespace KODI::VIDEO;
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 
 bool CVideoFileItemListModifier::CanModify(const CFileItemList &items) const
 {
-  if (items.IsVideoDb())
+  if (IsVideoDb(items))
     return true;
 
   return false;
@@ -40,7 +43,7 @@ bool CVideoFileItemListModifier::Modify(CFileItemList &items) const
 //  depending on the child node
 void CVideoFileItemListModifier::AddQueuingFolder(CFileItemList& items)
 {
-  if (!items.IsVideoDb())
+  if (!IsVideoDb(items))
     return;
 
   auto directoryNode = CDirectoryNode::ParseURL(items.GetPath());

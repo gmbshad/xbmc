@@ -179,7 +179,6 @@ public:
   static float GetSystemVolume();
   static void SetSystemVolume(float percent);
 
-  void SetRefreshRate(float rate);
   void SetDisplayMode(int mode, float rate);
   int GetDPI() const;
 
@@ -242,7 +241,6 @@ private:
   void run();
   void stop();
   void SetupEnv();
-  static void SetRefreshRateCallback(void* rateVariant);
   static void SetDisplayModeCallback(void* modeVariant);
   static void KeepScreenOnCallback(void* onVariant);
 
@@ -257,7 +255,8 @@ private:
   bool m_hdmiSource{false};
   bool m_wakeUp{false};
   bool m_aeReset{false};
-  bool m_supportsHdmiAudioPlug{false};
+  bool m_hdmiPlugged{true};
+  bool m_mediaSessionUpdated{false};
   IInputDeviceCallbacks* m_inputDeviceCallbacks{nullptr};
   IInputDeviceEventHandler* m_inputDeviceEventHandler{nullptr};
   bool m_hasReqVisible{false};

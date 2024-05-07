@@ -14,6 +14,7 @@
 #include "Util.h"
 #include "favourites/FavouritesURL.h"
 #include "input/WindowTranslator.h"
+#include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/SettingsComponent.h"
 #include "utils/ContentUtils.h"
@@ -21,8 +22,11 @@
 #include "utils/URIUtils.h"
 #include "utils/XBMCTinyXML2.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <mutex>
+
+using namespace KODI;
 
 namespace
 {
@@ -71,14 +75,14 @@ bool IsMediasourceOfFavItemUnlocked(const std::shared_ptr<CFileItem>& item)
 
   if (action == CFavouritesURL::Action::PLAY_MEDIA)
   {
-    if (itemToCheck.IsVideo())
+    if (VIDEO::IsVideo(itemToCheck))
     {
       if (!profileManager->GetCurrentProfile().videoLocked())
         return g_passwordManager.IsMediaFileUnlocked("video", itemToCheck.GetPath());
 
       return false;
     }
-    else if (itemToCheck.IsAudio())
+    else if (MUSIC::IsAudio(itemToCheck))
     {
       if (!profileManager->GetCurrentProfile().musicLocked())
         return g_passwordManager.IsMediaFileUnlocked("music", itemToCheck.GetPath());

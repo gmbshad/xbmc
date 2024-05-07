@@ -9,17 +9,22 @@
 #include "SourcesDirectory.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "Util.h"
 #include "guilib/TextureManager.h"
 #include "media/MediaLockState.h"
+#include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/MediaSourceSettings.h"
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 
+using namespace KODI;
 using namespace XFILE;
 
 CSourcesDirectory::CSourcesDirectory(void) = default;
@@ -68,12 +73,10 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
     else if (   pItem->IsPath("special://musicplaylists/")
              || pItem->IsPath("special://videoplaylists/"))
       strIcon = "DefaultPlaylist.png";
-    else if (   pItem->IsVideoDb()
-             || pItem->IsMusicDb()
-             || pItem->IsPlugin()
-             || pItem->IsPath("musicsearch://"))
+    else if (VIDEO::IsVideoDb(*pItem) || MUSIC::IsMusicDb(*pItem) || pItem->IsPlugin() ||
+             pItem->IsPath("musicsearch://"))
       strIcon = "DefaultFolder.png";
-    else if (pItem->IsRemote())
+    else if (NETWORK::IsRemote(*pItem))
       strIcon = "DefaultNetwork.png";
     else if (pItem->IsISO9660())
       strIcon = "DefaultDVDRom.png";
@@ -81,7 +84,7 @@ bool CSourcesDirectory::GetDirectory(const VECSOURCES &sources, CFileItemList &i
       strIcon = "DefaultDVDFull.png";
     else if (pItem->IsBluray())
       strIcon = "DefaultBluray.png";
-    else if (pItem->IsCDDA())
+    else if (MUSIC::IsCDDA(*pItem))
       strIcon = "DefaultCDDA.png";
     else if (pItem->IsRemovable() && CServiceBroker::GetGUI()->GetTextureManager().HasTexture("DefaultRemovableDisk.png"))
       strIcon = "DefaultRemovableDisk.png";

@@ -9,6 +9,7 @@
 #include "VideoVersionHelper.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "URL.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -21,10 +22,12 @@
 #include "utils/StringUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
 
-using namespace VIDEO::GUILIB;
+namespace KODI::VIDEO::GUILIB
+{
 
 namespace
 {
@@ -46,7 +49,7 @@ private:
   std::shared_ptr<const CFileItem> ChooseVideo(CGUIDialogSelect& dialog,
                                                int headingId,
                                                int buttonId,
-                                               const CFileItemList& itemsToDisplay,
+                                               CFileItemList& itemsToDisplay,
                                                const CFileItemList& itemsToSwitchTo);
 
   const std::shared_ptr<const CFileItem> m_item;
@@ -151,15 +154,13 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideoExtra()
 std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& dialog,
                                                             int headingId,
                                                             int buttonId,
-                                                            const CFileItemList& itemsToDisplay,
+                                                            CFileItemList& itemsToDisplay,
                                                             const CFileItemList& itemsToSwitchTo)
 {
   CVideoThumbLoader thumbLoader;
+  thumbLoader.Load(itemsToDisplay);
   for (auto& item : itemsToDisplay)
-  {
-    thumbLoader.LoadItem(item.get());
     item->SetLabel2(item->GetVideoInfoTag()->m_strFileNameAndPath);
-  }
 
   dialog.Reset();
 
@@ -173,6 +174,9 @@ std::shared_ptr<const CFileItem> CVideoChooser::ChooseVideo(CGUIDialogSelect& di
   dialog.SetItems(itemsToDisplay);
 
   dialog.Open();
+
+  if (thumbLoader.IsLoading())
+    thumbLoader.StopThread();
 
   m_switchType = dialog.IsButtonPressed();
   if (dialog.IsConfirmed())
@@ -278,16 +282,4 @@ std::shared_ptr<CFileItem> CVideoVersionHelper::ChooseVideoFromAssets(
   return item;
 }
 
-bool VIDEO::IsVideoAssetFile(const CFileItem& item)
-{
-  if (item.m_bIsFolder || !item.IsVideoDb())
-    return false;
-
-  // @todo maybe in the future look for prefix videodb://movies/videoversions in path instead
-  // @todo better encoding of video assets as path, they won't always be tied with movies.
-  const CURL itemUrl{item.GetPath()};
-  if (itemUrl.HasOption("videoversionid"))
-    return true;
-
-  return false;
-}
+} // namespace KODI::VIDEO::GUILIB

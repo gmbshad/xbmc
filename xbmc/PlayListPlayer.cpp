@@ -9,6 +9,7 @@
 #include "PlayListPlayer.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "ServiceBroker.h"
@@ -28,6 +29,7 @@
 #include "interfaces/AnnouncementManager.h"
 #include "messaging/ApplicationMessenger.h"
 #include "messaging/helpers/DialogOKHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
@@ -37,9 +39,12 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 
 using namespace PLAYLIST;
+using namespace KODI;
 using namespace KODI::MESSAGING;
+using namespace KODI::VIDEO;
 
 CPlayListPlayer::CPlayListPlayer(void)
 {
@@ -263,11 +268,13 @@ bool CPlayListPlayer::PlayItemIdx(int itemIdx)
   return Play();
 }
 
-bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
+bool CPlayListPlayer::Play(const CFileItemPtr& pItem,
+                           const std::string& player,
+                           bool forceSelection /* = false */)
 {
   Id playlistId;
-  bool isVideo{pItem->IsVideo()};
-  bool isAudio{pItem->IsAudio()};
+  bool isVideo{IsVideo(*pItem)};
+  bool isAudio{MUSIC::IsAudio(*pItem)};
 
   if (isAudio && !isVideo)
     playlistId = TYPE_MUSIC;
@@ -301,13 +308,14 @@ bool CPlayListPlayer::Play(const CFileItemPtr& pItem, const std::string& player)
   SetCurrentPlaylist(playlistId);
   Add(playlistId, pItem);
 
-  return Play(0, player);
+  return Play(0, player, false, false, forceSelection);
 }
 
 bool CPlayListPlayer::Play(int iSong,
                            const std::string& player,
                            bool bAutoPlay /* = false */,
-                           bool bPlayPrevious /* = false */)
+                           bool bPlayPrevious /* = false */,
+                           bool forceSelection /* = false */)
 {
   if (m_iCurrentPlayList == TYPE_NONE)
     return false;
@@ -331,7 +339,7 @@ bool CPlayListPlayer::Play(int iSong,
 
   m_iCurrentSong = iSong;
   CFileItemPtr item = playlist[m_iCurrentSong];
-  if (item->IsVideoDb() && !item->HasVideoInfoTag())
+  if (IsVideoDb(*item) && !item->HasVideoInfoTag())
     *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetDynPath()));
 
   playlist.SetPlayed(true);
@@ -339,7 +347,7 @@ bool CPlayListPlayer::Play(int iSong,
   m_bPlaybackStarted = false;
 
   const auto playAttempt = std::chrono::steady_clock::now();
-  bool ret = g_application.PlayFile(*item, player, bAutoPlay);
+  bool ret = g_application.PlayFile(*item, player, bAutoPlay, forceSelection);
   if (!ret)
   {
     CLog::Log(LOGERROR, "Playlist Player: skipping unplayable item: {}, path [{}]", m_iCurrentSong,
@@ -949,7 +957,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
         Id playlistId = TYPE_MUSIC;
         for (int i = 0; i < list->Size(); i++)
         {
-          if ((*list)[i]->IsVideo())
+          if (IsVideo(*list->Get(i)))
           {
             playlistId = TYPE_VIDEO;
             break;
@@ -967,7 +975,7 @@ void PLAYLIST::CPlayListPlayer::OnApplicationMessage(KODI::MESSAGING::ThreadMess
           {
             return;
           }
-          if (item->IsAudio() || item->IsVideo())
+          if (MUSIC::IsAudio(*item) || IsVideo(*item))
             Play(item, pMsg->strParam);
           else
             g_application.PlayMedia(*item, pMsg->strParam, playlistId);

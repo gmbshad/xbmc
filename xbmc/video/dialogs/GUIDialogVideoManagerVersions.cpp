@@ -9,6 +9,7 @@
 #include "GUIDialogVideoManagerVersions.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
 #include "URL.h"
@@ -583,12 +584,6 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
           return false;
         }
       }
-      else
-      {
-        // @todo: should be in a database transaction with the addition as a new asset below
-        if (!m_database.RemoveVideoVersion(newAsset.m_idFile))
-          return false;
-      }
     }
 
     CFileItem item{path, false};
@@ -605,7 +600,7 @@ bool CGUIDialogVideoManagerVersions::AddVideoVersionFilePicker()
     if (idNewVideoVersion == -1)
       return false;
 
-    m_database.AddPrimaryVideoVersion(itemType, dbId, idNewVideoVersion, item);
+    m_database.AddVideoAsset(itemType, dbId, idNewVideoVersion, VideoAssetType::VERSION, item);
 
     return true;
   }

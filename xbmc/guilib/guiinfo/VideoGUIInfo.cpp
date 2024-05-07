@@ -26,6 +26,7 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
@@ -35,6 +36,7 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/VideoThumbLoader.h"
@@ -43,6 +45,7 @@
 
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
+using namespace KODI;
 
 CVideoGUIInfo::CVideoGUIInfo()
   : m_appPlayer(CServiceBroker::GetAppComponents().GetComponent<CApplicationPlayer>())
@@ -61,10 +64,10 @@ int CVideoGUIInfo::GetPercentPlayed(const CVideoInfoTag* tag) const
 
 bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
 {
-  if (item && item->IsVideo())
+  if (item && VIDEO::IsVideo(*item))
   {
     // special case where .strm is used to start an audio stream
-    if (item->IsInternetStream() && m_appPlayer->IsPlayingAudio())
+    if (NETWORK::IsInternetStream(*item) && m_appPlayer->IsPlayingAudio())
       return false;
 
     CLog::Log(LOGDEBUG, "CVideoGUIInfo::InitCurrentItem({})", CURL::GetRedacted(item->GetPath()));
@@ -77,7 +80,7 @@ bool CVideoGUIInfo::InitCurrentItem(CFileItem *item)
     }
 
     // find a thumb for this stream
-    if (item->IsInternetStream())
+    if (NETWORK::IsInternetStream(*item))
     {
       if (!g_application.m_strPlayListFile.empty())
       {
@@ -479,7 +482,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
-        if (item->IsVideoDb())
+        if (VIDEO::IsVideoDb(*item))
           value = URIUtils::GetFileName(tag->m_strFileNameAndPath);
         else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
@@ -494,7 +497,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
-        if (item->IsVideoDb())
+        if (VIDEO::IsVideoDb(*item))
         {
           if (item->m_bIsFolder)
             value = tag->m_strPath;
@@ -515,7 +518,7 @@ bool CVideoGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
-        if (item->IsVideoDb())
+        if (VIDEO::IsVideoDb(*item))
           value = tag->m_strFileNameAndPath;
         else if (item->HasMusicInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;

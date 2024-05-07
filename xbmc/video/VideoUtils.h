@@ -12,8 +12,17 @@
 
 class CFileItem;
 
-namespace VIDEO_UTILS
+namespace KODI::VIDEO::UTILS
 {
+/*!
+ \brief Check whether an item is an optical media folder or its parent.
+  This will return the non-empty path to the playable entry point of the media
+  one or two levels down (VIDEO_TS.IFO for DVDs or index.bdmv for BDs).
+  The returned path will be empty if folder does not meet this criterion.
+ \return non-empty string if item is optical media folder, empty otherwise.
+ */
+std::string GetOpticalMediaPath(const CFileItem& item);
+
 /*! \brief Check whether auto play next item is set for the media type of the given item.
   \param item [in] the item to check
   \return True if auto play next item is active, false otherwise.
@@ -48,4 +57,4 @@ ResumeInformation GetItemResumeInformation(const CFileItem& item);
  */
 ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned int partNumber);
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

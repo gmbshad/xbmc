@@ -184,6 +184,7 @@ public:
   virtual float GetYPosition() const;
   virtual float GetWidth() const;
   virtual float GetHeight() const;
+  virtual void AssignDepth();
 
   void MarkDirtyRegion(const unsigned int dirtyState = DIRTY_STATE_CONTROL);
   bool IsControlDirty() const { return m_controlDirtyState != 0; }
@@ -305,6 +306,11 @@ public:
     GUICONTROL_VISUALISATION,
   };
   GUICONTROLTYPES GetControlType() const { return ControlType; }
+
+  /*! \brief Test whether the control is "drawable" (not a group or similar)
+   \return true if the control has textures/labels it wants to render
+   */
+  bool IsControlRenderable();
 
   enum GUIVISIBLE { HIDDEN = 0, DELAYED, VISIBLE };
 

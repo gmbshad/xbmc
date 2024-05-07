@@ -5,6 +5,7 @@ DEPS = ../../Makefile.include Makefile CURL-VERSION ../../download-files.include
 CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
           ./configure --prefix=$(PREFIX) \
                       --disable-shared \
+                      --disable-docs \
                       --disable-ldap \
                       --without-libssh2 \
                       --disable-ntlm-wb \
@@ -13,11 +14,11 @@ CONFIGURE=cp -f $(CONFIG_SUB) $(CONFIG_GUESS) .; \
                       --without-libidn2 \
                       --with-ca-fallback \
                       --with-ssl=$(PREFIX) \
+                      --with-brotli=$(PREFIX) \
                       --with-nghttp2=$(PREFIX) \
                       --with-zlib \
                       --without-libpsl \
                       --without-zstd \
-                      --without-brotli \
                       --without-gssapi \
                       --without-gsasl \
                       --without-hyper \

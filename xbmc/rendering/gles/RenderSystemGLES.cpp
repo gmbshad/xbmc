@@ -135,8 +135,7 @@ bool CRenderSystemGLES::ResetRenderSystem(int width, int height)
   glMatrixTexture.Load();
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND); // Turn Blending On
 
   return true;
 }
@@ -187,6 +186,23 @@ bool CRenderSystemGLES::EndRender()
   return true;
 }
 
+void CRenderSystemGLES::InvalidateColorBuffer()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  // some platforms prefer a clear, instead of rendering over
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+    ClearBuffers(0);
+
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+    return;
+
+  glClearDepthf(0);
+  glDepthMask(true);
+  glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
@@ -200,6 +216,14 @@ bool CRenderSystemGLES::ClearBuffers(UTILS::COLOR::Color color)
   glClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  {
+    glClearDepthf(0);
+    glDepthMask(GL_TRUE);
+    flags |= GL_DEPTH_BUFFER_BIT;
+  }
+
   glClear(flags);
 
   return true;
@@ -383,6 +407,27 @@ void CRenderSystemGLES::ResetScissors()
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
 
+void CRenderSystemGLES::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (culling == DEPTH_CULLING_OFF)
+  {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
+  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_GEQUAL);
+  }
+  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_GREATER);
+  }
+}
+
 void CRenderSystemGLES::InitialiseShaders()
 {
   std::string defines;
@@ -425,12 +470,22 @@ void CRenderSystemGLES::InitialiseShaders()
   }
 
   m_pShader[ShaderMethodGLES::SM_FONTS] =
-      std::make_unique<CGLESShader>("gles_shader_fonts.frag", defines);
+      std::make_unique<CGLESShader>("gles_shader_simple.vert", "gles_shader_fonts.frag", defines);
   if (!m_pShader[ShaderMethodGLES::SM_FONTS]->CompileAndLink())
   {
     m_pShader[ShaderMethodGLES::SM_FONTS]->Free();
     m_pShader[ShaderMethodGLES::SM_FONTS].reset();
     CLog::Log(LOGERROR, "GUI Shader gles_shader_fonts.frag - compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP] =
+      std::make_unique<CGLESShader>("gles_shader_clip.vert", "gles_shader_fonts.frag", defines);
+  if (!m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gles_shader_clip.vert + gles_shader_fonts.frag - compile "
+                        "and link failed");
   }
 
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND] =
@@ -528,6 +583,10 @@ void CRenderSystemGLES::ReleaseShaders()
     m_pShader[ShaderMethodGLES::SM_FONTS]->Free();
   m_pShader[ShaderMethodGLES::SM_FONTS].reset();
 
+  if (m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP])
+    m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGLES::SM_FONTS_SHADER_CLIP].reset();
+
   if (m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND])
     m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND]->Free();
   m_pShader[ShaderMethodGLES::SM_TEXTURE_NOBLEND].reset();
@@ -615,6 +674,14 @@ GLint CRenderSystemGLES::GUIShaderGetCoord1()
   return -1;
 }
 
+GLint CRenderSystemGLES::GUIShaderGetDepth()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetDepthLoc();
+
+  return -1;
+}
+
 GLint CRenderSystemGLES::GUIShaderGetUniCol()
 {
   if (m_pShader[m_method])
@@ -672,6 +739,30 @@ GLint CRenderSystemGLES::GUIShaderGetModel()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetModelLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetMatrix()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetMatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetClip()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderClipLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGLES::GUIShaderGetCoordStep()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderCoordStepLoc();
 
   return -1;
 }

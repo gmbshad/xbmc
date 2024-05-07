@@ -11,15 +11,18 @@
 #include "DVDInputStreams/DVDInputStream.h"
 #include "DVDStreamInfo.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "filesystem/StackDirectory.h"
 #include "guilib/Texture.h"
+#include "network/NetworkFileItemClassify.h"
 #include "pictures/Picture.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/MemUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreams/DVDInputStreamBluray.h"
@@ -48,6 +51,8 @@ extern "C" {
 #include <libavformat/avformat.h>
 #include <libswscale/swscale.h>
 }
+
+using namespace KODI;
 
 bool CDVDFileInfo::GetFileDuration(const std::string &path, int& duration)
 {
@@ -258,12 +263,12 @@ bool CDVDFileInfo::CanExtract(const CFileItem& fileItem)
       URIUtils::IsPVRRecording(fileItem.GetDynPath()) ||
       // plugin path not fully resolved
       URIUtils::IsPlugin(fileItem.GetDynPath()) || URIUtils::IsUPnP(fileItem.GetPath()) ||
-      fileItem.IsInternetStream() || fileItem.IsDiscStub() || fileItem.IsPlayList())
+      NETWORK::IsInternetStream(fileItem) || VIDEO::IsDiscStub(fileItem) || fileItem.IsPlayList())
     return false;
 
   // mostly can't extract from discs and files from discs.
-  if (URIUtils::IsBluray(fileItem.GetPath()) || fileItem.IsBDFile() || fileItem.IsDVD() ||
-      fileItem.IsDiscImage() || fileItem.IsDVDFile(false, true))
+  if (URIUtils::IsBluray(fileItem.GetPath()) || VIDEO::IsBDFile(fileItem) || fileItem.IsDVD() ||
+      fileItem.IsDiscImage() || VIDEO::IsDVDFile(fileItem, false, true))
     return false;
 
   // For HTTP/FTP we only allow extraction when on a LAN

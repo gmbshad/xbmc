@@ -21,8 +21,9 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/StereoscopicsManager.h"
 #include "interfaces/AnnouncementManager.h"
-#include "interfaces/json-rpc/JSONUtils.h"
 #include "interfaces/python/XBPython.h"
+#include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
@@ -32,9 +33,12 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <memory>
+
+using namespace KODI;
 
 CApplicationPlayerCallback::CApplicationPlayerCallback()
 {
@@ -54,8 +58,9 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
   std::shared_ptr<CFileItem> itemCurrentFile;
 
   // check if VideoPlayer should set file item stream details from its current streams
-  const bool isBlu_dvd_image_or_stream = (URIUtils::IsBluray(file.GetPath()) || file.IsDVDFile() ||
-                                          file.IsDiscImage() || file.IsInternetStream());
+  const bool isBlu_dvd_image_or_stream = URIUtils::IsBluray(file.GetPath()) ||
+                                         VIDEO::IsDVDFile(file) || file.IsDiscImage() ||
+                                         NETWORK::IsInternetStream(file);
 
   const bool hasNoStreamDetails =
       (!file.HasVideoInfoTag() || !file.GetVideoInfoTag()->HasStreamDetails());
@@ -80,7 +85,7 @@ void CApplicationPlayerCallback::OnPlayBackStarted(const CFileItem& file)
    * This should speed up player startup for files on internet filesystems (eg. webdav) and
    * increase performance on low powered systems (Atom/ARM).
    */
-  if (file.IsVideo() || file.IsGame())
+  if (VIDEO::IsVideo(file) || file.IsGame())
   {
     CServiceBroker::GetJobManager()->PauseJobs();
   }
@@ -126,9 +131,9 @@ void CApplicationPlayerCallback::OnPlayerCloseFile(const CFileItem& file,
   const std::shared_ptr<CAdvancedSettings> advancedSettings =
       CServiceBroker::GetSettingsComponent()->GetAdvancedSettings();
 
-  if ((fileItem.IsAudio() && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
+  if ((MUSIC::IsAudio(fileItem) && advancedSettings->m_audioPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_audioPlayCountMinimumPercent) ||
-      (fileItem.IsVideo() && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
+      (VIDEO::IsVideo(fileItem) && advancedSettings->m_videoPlayCountMinimumPercent > 0 &&
        percent >= advancedSettings->m_videoPlayCountMinimumPercent))
   {
     playCountUpdate = true;

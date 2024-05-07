@@ -10,6 +10,7 @@
 
 #include "ContextMenuManager.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -51,6 +52,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "video/VideoDbUrl.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoScanner.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoItemArtworkHandler.h"
@@ -70,6 +72,7 @@
 
 using namespace XFILE::VIDEODATABASEDIRECTORY;
 using namespace XFILE;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 #define CONTROL_IMAGE                3
@@ -766,7 +769,7 @@ private:
     const ContentUtils::PlayMode mode{item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(item, "", mode);
+    VIDEO::UTILS::PlayItem(item, "", mode);
   }
 };
 } // unnamed namespace
@@ -1067,7 +1070,8 @@ std::string CGUIDialogVideoInfo::GetThumbnail() const
 
 int CGUIDialogVideoInfo::ManageVideoItem(const std::shared_ptr<CFileItem>& item)
 {
-  if (item == nullptr || !item->IsVideoDb() || !item->HasVideoInfoTag() || item->GetVideoInfoTag()->m_iDbId < 0)
+  if (item == nullptr || !VIDEO::IsVideoDb(*item) || !item->HasVideoInfoTag() ||
+      item->GetVideoInfoTag()->m_iDbId < 0)
     return -1;
 
   CVideoDatabase database;

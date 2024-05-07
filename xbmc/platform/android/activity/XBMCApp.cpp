@@ -47,6 +47,7 @@
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "windowing/GraphicContext.h"
 #include "windowing/WinEvents.h"
@@ -55,7 +56,6 @@
 
 #include "platform/android/activity/IInputDeviceCallbacks.h"
 #include "platform/android/activity/IInputDeviceEventHandler.h"
-#include "platform/android/network/NetworkAndroid.h"
 #include "platform/android/powermanagement/AndroidPowerSyscall.h"
 
 #include <memory>
@@ -118,6 +118,7 @@
 using namespace ANNOUNCEMENT;
 using namespace jni;
 using namespace KODI::GUILIB;
+using namespace KODI::VIDEO;
 using namespace std::chrono_literals;
 
 std::shared_ptr<CNativeWindow> CNativeWindow::CreateFromSurface(CJNISurfaceHolder holder)
@@ -214,14 +215,23 @@ void CXBMCApp::Announce(ANNOUNCEMENT::AnnouncementFlag flag,
     else if (message == "OnStop")
       OnPlayBackStopped();
     else if (message == "OnSeek")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionState();
+    }
     else if (message == "OnSpeedChanged")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionState();
+    }
   }
   else if (flag & Info)
   {
     if (message == "OnChanged")
+    {
+      m_mediaSessionUpdated = false;
       UpdateSessionMetadata();
+    }
   }
 }
 
@@ -677,29 +687,6 @@ bool CXBMCApp::SetBuffersGeometry(int width, int height, int format)
   return false;
 }
 
-void CXBMCApp::SetRefreshRateCallback(void* rateVariant)
-{
-  CVariant* rateV = static_cast<CVariant*>(rateVariant);
-  float rate = rateV->asFloat();
-  delete rateV;
-
-  CJNIWindow window = getWindow();
-  if (window)
-  {
-    CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) > 0.001f)
-    {
-      params.setpreferredRefreshRate(rate);
-      if (params.getpreferredRefreshRate() > 0.0f)
-      {
-        window.setAttributes(params);
-        return;
-      }
-    }
-  }
-  CXBMCApp::Get().m_displayChangeEvent.Set();
-}
-
 void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
 {
   CVariant* modeV = static_cast<CVariant*>(modeVariant);
@@ -718,30 +705,6 @@ void CXBMCApp::SetDisplayModeCallback(void* modeVariant)
     }
   }
   CXBMCApp::Get().m_displayChangeEvent.Set();
-}
-
-void CXBMCApp::SetRefreshRate(float rate)
-{
-  if (rate < 1.0f)
-    return;
-
-  CJNIWindow window = getWindow();
-  if (window)
-  {
-    CJNIWindowManagerLayoutParams params = window.getAttributes();
-    if (fabs(params.getpreferredRefreshRate() - rate) <= 0.001f)
-      return;
-  }
-
-  m_refreshRate = rate;
-  m_displayChangeEvent.Reset();
-
-  if (m_hdmiSource)
-    dynamic_cast<CWinSystemAndroid*>(CServiceBroker::GetWinSystem())->InitiateModeChange();
-
-  CVariant *variant = new CVariant(rate);
-  runNativeOnUiThread(SetRefreshRateCallback, variant);
-  m_displayChangeEvent.Wait(5000ms);
 }
 
 void CXBMCApp::SetDisplayMode(int mode, float rate)
@@ -785,7 +748,7 @@ int CXBMCApp::android_printf(const char* format, ...)
     int len = vsnprintf(0, 0, format, args_copy);
     message.resize(len);
     result = vsnprintf(&message[0], len + 1, format, args);
-    CLog::Log(LOGDEBUG, message);
+    CLog::Log(LOGDEBUG, "{}", message);
   }
   else
   {
@@ -885,6 +848,7 @@ void CXBMCApp::UpdateSessionState()
   float speed = 0.0;
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
+  uint32_t oldPlayState = m_playback_state;
   if (m_playback_state != PLAYBACK_STATE_STOPPED)
   {
     if (appPlayer->HasVideo())
@@ -908,9 +872,13 @@ void CXBMCApp::UpdateSessionState()
   else
     state = CJNIPlaybackState::STATE_STOPPED;
 
-  builder.setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
-      .setActions(CJNIPlaybackState::PLAYBACK_POSITION_UNKNOWN);
-  m_mediaSession->updatePlaybackState(builder.build());
+  if ((oldPlayState != m_playback_state) || !m_mediaSessionUpdated)
+  {
+    builder.setState(state, pos, speed, CJNISystemClock::elapsedRealtime())
+        .setActions(CJNIPlaybackState::PLAYBACK_POSITION_UNKNOWN);
+    m_mediaSession->updatePlaybackState(builder.build());
+    m_mediaSessionUpdated = true;
+  }
 }
 
 void CXBMCApp::OnPlayBackStarted()
@@ -928,6 +896,7 @@ void CXBMCApp::OnPlayBackStarted()
     m_playback_state |= PLAYBACK_STATE_CANNOT_PAUSE;
 
   m_mediaSession->activate(true);
+  m_mediaSessionUpdated = false;
   UpdateSessionState();
 
   CJNIIntent intent(ACTION_XBMC_RESUME, CJNIURI::EMPTY, *this, get_class(CJNIContext::get_raw()));
@@ -944,6 +913,7 @@ void CXBMCApp::OnPlayBackPaused()
   CLog::Log(LOGDEBUG, "{}", __PRETTY_FUNCTION__);
 
   m_playback_state &= ~PLAYBACK_STATE_PLAYING;
+  m_mediaSessionUpdated = false;
   UpdateSessionState();
 
   RequestVisibleBehind(false);
@@ -957,6 +927,7 @@ void CXBMCApp::OnPlayBackStopped()
   m_playback_state = PLAYBACK_STATE_STOPPED;
   UpdateSessionState();
   m_mediaSession->activate(false);
+  m_mediaSessionUpdated = false;
 
   RequestVisibleBehind(false);
   CAndroidKey::SetHandleMediaKeys(true);
@@ -977,7 +948,8 @@ std::vector<int> CXBMCApp::GetInputDeviceIds()
 
 void CXBMCApp::ProcessSlow()
 {
-  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && m_mediaSession->isActive())
+  if ((m_playback_state & PLAYBACK_STATE_PLAYING) && !m_mediaSessionUpdated &&
+      m_mediaSession->isActive())
     UpdateSessionState();
 }
 
@@ -1333,22 +1305,21 @@ void CXBMCApp::onReceive(CJNIIntent intent)
   }
   else if (action == CJNIAudioManager::ACTION_HDMI_AUDIO_PLUG)
   {
-    m_supportsHdmiAudioPlug = true;
-    const bool hdmiPlugged = (intent.getIntExtra(CJNIAudioManager::EXTRA_AUDIO_PLUG_STATE, 0) != 0);
-    android_printf("-- HDMI is plugged in: %s", hdmiPlugged ? "yes" : "no");
+    m_hdmiPlugged = (intent.getIntExtra(CJNIAudioManager::EXTRA_AUDIO_PLUG_STATE, 0) != 0);
+    android_printf("-- HDMI is plugged in: %s", m_hdmiPlugged ? "yes" : "no");
     if (g_application.IsInitialized())
     {
       CWinSystemBase* winSystem = CServiceBroker::GetWinSystem();
       if (winSystem && dynamic_cast<CWinSystemAndroid*>(winSystem))
-        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(hdmiPlugged);
+        dynamic_cast<CWinSystemAndroid*>(winSystem)->SetHdmiState(m_hdmiPlugged);
     }
-    if (hdmiPlugged && m_aeReset)
+    if (m_hdmiPlugged && m_aeReset)
     {
       android_printf("CXBMCApp::onReceive: Reset audio engine");
       CServiceBroker::GetActiveAE()->DeviceChange();
       m_aeReset = false;
     }
-    if (hdmiPlugged && m_wakeUp)
+    if (m_hdmiPlugged && m_wakeUp)
     {
       OnWakeup();
       m_wakeUp = false;
@@ -1362,11 +1333,11 @@ void CXBMCApp::onReceive(CJNIIntent intent)
     // screen but it is actually sent in response to changes in the overall interactive state of
     // the device.
     CLog::Log(LOGINFO, "Got device wakeup intent");
-    if (m_supportsHdmiAudioPlug)
+    if (m_hdmiPlugged)
+      OnWakeup();
+    else
       // wake-up sequence continues in ACTION_HDMI_AUDIO_PLUG intent
       m_wakeUp = true;
-    else
-      OnWakeup();
   }
   else if (action == CJNIIntent::ACTION_SCREEN_OFF)
   {
@@ -1411,18 +1382,6 @@ void CXBMCApp::onReceive(CJNIIntent intent)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_REWIND, 0, 0, up);
     else if (keycode == CJNIKeyEvent::KEYCODE_MEDIA_STOP)
       CAndroidKey::XBMC_Key(keycode, XBMCK_MEDIA_STOP, 0, 0, up);
-  }
-  else if (action == CJNIConnectivityManager::CONNECTIVITY_ACTION)
-  {
-    if (g_application.IsInitialized())
-    {
-      if (CJNIBase::GetSDKVersion() < 24)
-      {
-        CNetworkBase& net = CServiceBroker::GetNetwork();
-        CNetworkAndroid* netdroid = static_cast<CNetworkAndroid*>(&net);
-        netdroid->RetrieveInterfaces();
-      }
-    }
   }
 }
 
@@ -1494,7 +1453,7 @@ void CXBMCApp::onNewIntent(CJNIIntent intent)
     else
     {
       CFileItem* item = new CFileItem(targetFile, false);
-      if (item->IsVideoDb())
+      if (IsVideoDb(*item))
       {
         *(item->GetVideoInfoTag()) = XFILE::CVideoDatabaseFile::GetVideoTag(CURL(item->GetPath()));
         item->SetPath(item->GetVideoInfoTag()->m_strFileNameAndPath);

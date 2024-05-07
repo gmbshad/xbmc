@@ -24,6 +24,7 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -69,7 +70,7 @@ namespace ActiveAE
   class CActiveAE;
 }
 
-namespace VIDEO
+namespace KODI::VIDEO
 {
   class CVideoInfoScanner;
 }
@@ -125,7 +126,10 @@ public:
                                PLAYLIST::CPlayList& playlist,
                                PLAYLIST::Id playlistId,
                                int track = 0);
-  bool PlayFile(CFileItem item, const std::string& player, bool bRestart = false);
+  bool PlayFile(CFileItem item,
+                const std::string& player,
+                bool bRestart = false,
+                bool forceSelection = false);
   void StopPlaying();
   void Restart(bool bSamePosition = true);
   void DelayedPlayerRestart();
@@ -215,6 +219,7 @@ protected:
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
+  std::optional<bool> m_guiRenderLastState;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 

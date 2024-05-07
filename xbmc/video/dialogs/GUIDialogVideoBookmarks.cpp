@@ -9,6 +9,7 @@
 #include "GUIDialogVideoBookmarks.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "Util.h"
@@ -35,6 +36,7 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "view/ViewState.h"
 
 #include <algorithm>
@@ -47,6 +49,8 @@
 #define CONTROL_ADD_EPISODE_BOOKMARK   4
 
 #define CONTROL_THUMBS                11
+
+using namespace KODI::VIDEO;
 
 CGUIDialogVideoBookmarks::CGUIDialogVideoBookmarks()
   : CGUIDialog(WINDOW_DIALOG_VIDEO_BOOKMARKS, "VideoOSDBookmarks.xml")
@@ -531,7 +535,7 @@ bool CGUIDialogVideoBookmarks::AddEpisodeBookmark()
 
 bool CGUIDialogVideoBookmarks::OnAddBookmark()
 {
-  if (!g_application.CurrentFileItem().IsVideo())
+  if (!IsVideo(g_application.CurrentFileItem()))
     return false;
 
   if (CGUIDialogVideoBookmarks::AddBookmark())

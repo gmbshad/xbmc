@@ -9,6 +9,7 @@
 #include "DVDFactoryInputStream.h"
 
 #include "DVDInputStream.h"
+#include "network/NetworkFileItemClassify.h"
 #ifdef HAVE_LIBBLURAY
 #include "DVDInputStreamBluray.h"
 #endif
@@ -32,8 +33,11 @@
 #include "storage/MediaManager.h"
 #include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <memory>
+
+using namespace KODI;
 
 std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVideoPlayer* pPlayer, const CFileItem &fileitem, bool scanforextaudio)
 {
@@ -101,7 +105,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
   }
 #endif
 
-  if (fileitem.IsDVDFile(false, true))
+  if (VIDEO::IsDVDFile(fileitem, false, true))
     return std::make_shared<CDVDInputStreamNavigator>(pPlayer, fileitem);
   else if (URIUtils::IsPVRChannel(file))
     return std::make_shared<CInputStreamPVRChannel>(pPlayer, fileitem);
@@ -136,7 +140,7 @@ std::shared_ptr<CDVDInputStream> CDVDFactoryInputStream::CreateInputStream(IVide
 
   CFileItem finalFileitem(fileitem);
 
-  if (finalFileitem.IsInternetStream())
+  if (NETWORK::IsInternetStream(finalFileitem))
   {
     if (finalFileitem.ContentLookup())
     {

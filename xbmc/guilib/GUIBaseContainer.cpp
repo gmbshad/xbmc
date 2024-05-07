@@ -9,10 +9,12 @@
 #include "GUIBaseContainer.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "GUIListItemLayout.h"
 #include "GUIMessage.h"
 #include "ServiceBroker.h"
+#include "guilib/GUIListItem.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "guilib/listproviders/IListProvider.h"
 #include "input/actions/Action.h"
@@ -284,6 +286,8 @@ void CGUIBaseContainer::Render()
     float focusedPos = 0;
     std::shared_ptr<CGUIListItem> focusedItem;
     int current = offset - cacheBefore;
+
+    std::vector<RENDERITEM> renderitems;
     while (pos < end && m_items.size())
     {
       int itemNo = CorrectOffset(current, 0);
@@ -302,9 +306,9 @@ void CGUIBaseContainer::Render()
         else
         {
           if (m_orientation == VERTICAL)
-            RenderItem(origin.x, pos, item.get(), false);
+            renderitems.emplace_back(RENDERITEM{origin.x, pos, item, false});
           else
-            RenderItem(pos, origin.y, item.get(), false);
+            renderitems.emplace_back(RENDERITEM{pos, origin.y, item, false});
         }
       }
       // increment our position
@@ -315,9 +319,25 @@ void CGUIBaseContainer::Render()
     if (focusedItem)
     {
       if (m_orientation == VERTICAL)
-        RenderItem(origin.x, focusedPos, focusedItem.get(), true);
+        renderitems.emplace_back(RENDERITEM{origin.x, focusedPos, focusedItem, true});
       else
-        RenderItem(focusedPos, origin.y, focusedItem.get(), true);
+        renderitems.emplace_back(RENDERITEM{focusedPos, origin.y, focusedItem, true});
+    }
+
+    if (CServiceBroker::GetWinSystem()->GetGfxContext().GetRenderOrder() ==
+        RENDER_ORDER_FRONT_TO_BACK)
+    {
+      for (auto it = std::crbegin(renderitems); it != std::crend(renderitems); it++)
+      {
+        RenderItem(it->posX, it->posY, it->item.get(), it->focused);
+      }
+    }
+    else
+    {
+      for (const auto& renderitem : renderitems)
+      {
+        RenderItem(renderitem.posX, renderitem.posY, renderitem.item.get(), renderitem.focused);
+      }
     }
 
     CServiceBroker::GetWinSystem()->GetGfxContext().RestoreClipRegion();
@@ -875,10 +895,16 @@ bool CGUIBaseContainer::OnClick(int actionID)
       int selected = GetSelectedItem();
       if (selected >= 0 && selected < static_cast<int>(m_items.size()))
       {
+        // One of the actions could trigger a reload of the GUI which destroys
+        // this CGUIBaseContainer and therefore the m_items[selected] we are
+        // going to process. The shared_ptr ensures that item survives until
+        // it has been processed.
+        std::shared_ptr<CGUIListItem> item = m_items[selected];
+
         if (m_clickActions.HasActionsMeetingCondition())
-          m_clickActions.ExecuteActions(0, GetParentID(), m_items[selected]);
+          m_clickActions.ExecuteActions(0, GetParentID(), item);
         else
-          m_listProvider->OnClick(m_items[selected]);
+          m_listProvider->OnClick(item);
       }
       return true;
     }
@@ -1035,6 +1061,37 @@ void CGUIBaseContainer::UpdateVisibility(const CGUIListItem *item)
   }
 
   UpdateListProvider();
+}
+
+void CGUIBaseContainer::AssignDepth()
+{
+  std::shared_ptr<CGUIListItem> focusedItem = nullptr;
+  int32_t current = 0;
+
+  for (const auto& item : m_items)
+  {
+    bool focused = (current == GetOffset() + GetCursor());
+    if (focused)
+    {
+      focusedItem = item;
+    }
+    else
+    {
+      if (item->GetFocusedLayout())
+        item->GetFocusedLayout()->AssignDepth();
+      if (item->GetLayout())
+        item->GetLayout()->AssignDepth();
+    }
+    current++;
+  }
+
+  if (focusedItem)
+  {
+    if (focusedItem->GetFocusedLayout())
+      focusedItem->GetFocusedLayout()->AssignDepth();
+    if (focusedItem->GetLayout())
+      focusedItem->GetLayout()->AssignDepth();
+  }
 }
 
 void CGUIBaseContainer::UpdateListProvider(bool forceRefresh /* = false */)

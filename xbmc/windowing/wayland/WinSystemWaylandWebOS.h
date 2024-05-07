@@ -50,6 +50,7 @@ public:
 
 protected:
   std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> GetOSScreenSaverImpl() override;
+  std::unique_ptr<CSeat> CreateSeat(std::uint32_t name, wayland::seat_t& seat) override;
 
 private:
   static bool OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx);
@@ -65,8 +66,6 @@ private:
 
   std::unique_ptr<HContext, int (*)(HContext*)> m_requestContext{new HContext(),
                                                                  HUnregisterServiceCallback};
-
-  bool m_resumePlayback{false};
 };
 
 } // namespace KODI::WINDOWING::WAYLAND

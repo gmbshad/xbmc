@@ -9,6 +9,7 @@
 #include "VideoThumbLoader.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "TextureCache.h"
 #include "URL.h"
@@ -21,6 +22,7 @@
 #include "guilib/StereoscopicsManager.h"
 #include "music/MusicDatabase.h"
 #include "music/tags/MusicInfoTag.h"
+#include "network/NetworkFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingUtils.h"
 #include "settings/Settings.h"
@@ -29,6 +31,7 @@
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoManagerTypes.h"
 #include "video/guilib/VideoVersionHelper.h"
@@ -37,8 +40,8 @@
 #include <cstdlib>
 #include <utility>
 
+using namespace KODI;
 using namespace XFILE;
-using namespace VIDEO;
 
 CVideoThumbLoader::CVideoThumbLoader() : CThumbLoader()
 {
@@ -180,8 +183,11 @@ bool CVideoThumbLoader::LoadItemCached(CFileItem* pItem)
 
   if (!pItem->HasVideoInfoTag() || !pItem->GetVideoInfoTag()->HasStreamDetails()) // no stream details
   {
-    if ((pItem->HasVideoInfoTag() && pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
-    || (!pItem->m_bIsFolder && pItem->IsVideo())) // Some other video file for which we haven't yet got any database details
+    if ((pItem->HasVideoInfoTag() &&
+         pItem->GetVideoInfoTag()->m_iFileId >= 0) // file (or maybe folder) is in the database
+        || (!pItem->m_bIsFolder &&
+            VIDEO::IsVideo(
+                *pItem))) // Some other video file for which we haven't yet got any database details
     {
       if (m_videoDatabase->GetStreamDetails(*pItem))
         pItem->SetInvalid();
@@ -286,7 +292,7 @@ bool CVideoThumbLoader::LoadItemLookup(CFileItem* pItem)
   }
 
   // We can only extract flags/thumbs for file-like items
-  if (!pItem->m_bIsFolder && pItem->IsVideo())
+  if (!pItem->m_bIsFolder && VIDEO::IsVideo(*pItem))
   {
     const std::shared_ptr<CSettings> settings = CServiceBroker::GetSettingsComponent()->GetSettings();
     if (!pItem->HasArt("thumb"))
@@ -519,7 +525,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
       settings ? settings->GetInt(CSettings::SETTING_FILECACHE_BUFFERMODE) == CACHE_BUFFER_MODE_ALL
                : false;
 
-  if (item.m_bIsFolder && (item.IsStreamedFilesystem() || cacheAll))
+  if (item.m_bIsFolder && (NETWORK::IsStreamedFilesystem(item) || cacheAll))
   {
     CFileItemList items; // Dummy list
     CDirectory::GetDirectory(item.GetPath(), items, "", DIR_FLAG_NO_FILE_DIRS | DIR_FLAG_READ_CACHE | DIR_FLAG_NO_FILE_INFO);
@@ -549,7 +555,7 @@ std::string CVideoThumbLoader::GetLocalArt(const CFileItem &item, const std::str
 std::string CVideoThumbLoader::GetEmbeddedThumbURL(const CFileItem &item)
 {
   std::string path(item.GetPath());
-  if (item.IsVideoDb() && item.HasVideoInfoTag())
+  if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
     path = item.GetVideoInfoTag()->m_strFileNameAndPath;
   if (URIUtils::IsStack(path))
     path = CStackDirectory::GetFirstStackedFile(path);
@@ -595,7 +601,7 @@ void CVideoThumbLoader::DetectAndAddMissingItemData(CFileItem &item)
   if (stereoMode.empty())
   {
     std::string path = item.GetPath();
-    if (item.IsVideoDb() && item.HasVideoInfoTag())
+    if (VIDEO::IsVideoDb(item) && item.HasVideoInfoTag())
       path = item.GetVideoInfoTag()->GetPath();
 
     // check for custom stereomode setting in video settings

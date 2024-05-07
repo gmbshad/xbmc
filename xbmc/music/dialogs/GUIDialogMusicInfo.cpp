@@ -9,6 +9,7 @@
 #include "GUIDialogMusicInfo.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -26,6 +27,7 @@
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogOKHelper.h"
 #include "music/MusicDatabase.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/MusicUtils.h"
@@ -47,6 +49,7 @@
 using namespace XFILE;
 using namespace MUSIC_INFO;
 using namespace MUSICDATABASEDIRECTORY;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 
 #define CONTROL_BTN_REFRESH      6
@@ -989,7 +992,7 @@ void CGUIDialogMusicInfo::ShowFor(CFileItem* pItem)
 
   // We have a folder album/artist info dialog only shown for db items
   // or for music video with artist/album in music library
-  if (pItem->IsMusicDb())
+  if (MUSIC::IsMusicDb(*pItem))
   {
     if (!pItem->HasMusicInfoTag() || pItem->GetMusicInfoTag()->GetDatabaseId() < 1)
     {

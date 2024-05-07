@@ -17,6 +17,7 @@
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
 #include "messaging/helpers/DialogHelper.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -24,6 +25,7 @@
 #include "utils/StringUtils.h"
 #include "utils/TimeUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoThumbLoader.h"
 
 #include <mutex>
@@ -33,6 +35,7 @@
 #include <Platinum/Source/Platinum/Platinum.h>
 
 using namespace KODI::MESSAGING;
+using namespace KODI;
 
 using KODI::MESSAGING::HELPERS::DialogResponse;
 using namespace std::chrono_literals;
@@ -223,9 +226,9 @@ int CUPnPPlayer::PlayFile(const CFileItem& file,
 
   NPT_CHECK_POINTER_LABEL_SEVERE(m_delegate, failed);
 
-  if (file.IsVideoDb())
+  if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (MUSIC::IsMusicDb(item))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);
@@ -383,11 +386,11 @@ bool CUPnPPlayer::OpenFile(const CFileItem& file, const CPlayerOptions& options)
   m_stopremote = true;
   m_started = true;
 
-  if (file.IsVideo())
+  if (VIDEO::IsVideo(file))
   {
     m_hasVideo = true;
   }
-  else if (file.IsAudio())
+  else if (MUSIC::IsAudio(file))
   {
     m_hasAudio = true;
   }
@@ -417,9 +420,9 @@ bool CUPnPPlayer::QueueNextFile(const CFileItem& file)
   NPT_String path(file.GetPath().c_str());
   NPT_String tmp;
 
-  if (file.IsVideoDb())
+  if (VIDEO::IsVideoDb(file))
     thumb_loader = NPT_Reference<CThumbLoader>(new CVideoThumbLoader());
-  else if (item.IsMusicDb())
+  else if (MUSIC::IsMusicDb(item))
     thumb_loader = NPT_Reference<CThumbLoader>(new CMusicThumbLoader());
 
   obj = BuildObject(item, path, false, thumb_loader, NULL, CUPnP::GetServer(), UPnPPlayer);

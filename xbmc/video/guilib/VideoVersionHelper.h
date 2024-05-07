@@ -12,22 +12,13 @@
 
 class CFileItem;
 
-namespace VIDEO
+namespace KODI::VIDEO::GUILIB
 {
-namespace GUILIB
-{
+
 class CVideoVersionHelper
 {
 public:
   static std::shared_ptr<CFileItem> ChooseVideoFromAssets(const std::shared_ptr<CFileItem>& item);
 };
-} // namespace GUILIB
 
-/*!
- * \brief Is the item a video asset, excluding folders
- * \param[in] item the item
- * \return true if it is, false otherwise
- */
-bool IsVideoAssetFile(const CFileItem& item);
-
-} // namespace VIDEO
+} // namespace KODI::VIDEO::GUILIB

@@ -8,6 +8,7 @@
 #include "UPnPRenderer.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "GUIUserMessages.h"
 #include "ServiceBroker.h"
@@ -30,11 +31,14 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/Variant.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <inttypes.h>
 #include <mutex>
 
 #include <Platinum/Source/Platinum/Platinum.h>
+
+using namespace KODI::VIDEO;
 
 NPT_SET_LOCAL_LOGGER("xbmc.upnp.renderer")
 
@@ -628,7 +632,7 @@ NPT_Result CUPnPRenderer::OnSetNextAVTransportURI(PLT_ActionReference& action)
   {
 
     PLAYLIST::Id playlistId = PLAYLIST::TYPE_MUSIC;
-    if (item->IsVideo())
+    if (IsVideo(*item))
       playlistId = PLAYLIST::TYPE_VIDEO;
 
     // note: auto-deleted when the message is consumed

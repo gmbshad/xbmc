@@ -18,6 +18,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "interfaces/AnnouncementManager.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicThumbLoader.h"
 #include "pictures/PictureThumbLoader.h"
 #include "pvr/PVRManager.h"
@@ -34,6 +35,7 @@
 #include "utils/XMLUtils.h"
 #include "utils/guilib/GUIContentUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 #include "video/VideoThumbLoader.h"
 #include "video/VideoUtils.h"
@@ -46,6 +48,7 @@
 #include <utility>
 
 using namespace XFILE;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using namespace PVR;
 
@@ -133,12 +136,12 @@ public:
 
   std::shared_ptr<CThumbLoader> getThumbLoader(const CGUIStaticItemPtr& item)
   {
-    if (item->IsVideo())
+    if (VIDEO::IsVideo(*item))
     {
       initThumbLoader<CVideoThumbLoader>(InfoTagType::VIDEO);
       return m_thumbloaders[InfoTagType::VIDEO];
     }
-    if (item->IsAudio())
+    if (MUSIC::IsAudio(*item))
     {
       initThumbLoader<CMusicThumbLoader>(InfoTagType::AUDIO);
       return m_thumbloaders[InfoTagType::AUDIO];
@@ -596,7 +599,7 @@ bool CDirectoryProvider::OnPlay(const std::shared_ptr<CGUIListItem>& item)
 
   // video play action setting is for files and folders...
   if (targetItem.HasVideoInfoTag() ||
-      (targetItem.m_bIsFolder && VIDEO_UTILS::IsItemPlayable(targetItem)))
+      (targetItem.m_bIsFolder && VIDEO::UTILS::IsItemPlayable(targetItem)))
   {
     CVideoPlayActionProcessor proc{std::make_shared<CFileItem>(targetItem)};
     if (proc.ProcessDefaultAction())

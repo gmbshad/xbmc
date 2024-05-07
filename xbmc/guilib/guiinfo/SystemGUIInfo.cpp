@@ -9,6 +9,7 @@
 #include "guilib/guiinfo/SystemGUIInfo.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "LangInfo.h"
 #include "ServiceBroker.h"
@@ -25,6 +26,8 @@
 #include "guilib/guiinfo/GUIInfoLabels.h"
 #include "powermanagement/PowerManager.h"
 #include "profiles/ProfileManager.h"
+#include "pvr/PVRManager.h"
+#include "pvr/addons/PVRClients.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/MediaSettings.h"
 #include "settings/SettingUtils.h"
@@ -327,20 +330,6 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
       return true;
     }
 
-    case SYSTEM_LOCALE_TIMEZONECOUNTRY:
-    {
-      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_LOCALE_TIMEZONECOUNTRY);
-      return true;
-    }
-
-    case SYSTEM_LOCALE_TIMEZONE:
-    {
-      value = CServiceBroker::GetSettingsComponent()->GetSettings()->GetString(
-          CSettings::SETTING_LOCALE_TIMEZONE);
-      return true;
-    }
-
     case SYSTEM_LOCALE_REGION:
     {
       value = g_langInfo.GetCurrentRegion();
@@ -350,6 +339,12 @@ bool CSystemGUIInfo::GetLabel(std::string& value, const CFileItem *item, int con
     case SYSTEM_LOCALE:
     {
       value = g_langInfo.GetRegionLocale();
+      return true;
+    }
+
+    case SYSTEM_PVR_COUNT:
+    {
+      value = std::to_string(CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount());
       return true;
     }
   }
@@ -387,6 +382,11 @@ bool CSystemGUIInfo::GetInt(int& value, const CGUIListItem *gitem, int contextWi
     case SYSTEM_BATTERY_LEVEL:
       value = CServiceBroker::GetPowerManager().BatteryLevel();
       return true;
+    case SYSTEM_PVR_COUNT:
+    {
+      value = CServiceBroker::GetPVRManager().Clients()->EnabledClientAmount();
+      return true;
+    }
   }
 
   return false;
@@ -460,6 +460,13 @@ bool CSystemGUIInfo::GetBool(bool& value, const CGUIListItem *gitem, int context
       return true;
     case SYSTEM_PLATFORM_ANDROID:
 #if defined(TARGET_ANDROID)
+      value = true;
+#else
+      value = false;
+#endif
+      return true;
+    case SYSTEM_PLATFORM_WEBOS:
+#if defined(TARGET_WEBOS)
       value = true;
 #else
       value = false;

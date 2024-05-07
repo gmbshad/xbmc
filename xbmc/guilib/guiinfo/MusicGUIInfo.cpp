@@ -21,15 +21,18 @@
 #include "guilib/guiinfo/GUIInfo.h"
 #include "guilib/guiinfo/GUIInfoHelper.h"
 #include "guilib/guiinfo/GUIInfoLabels.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/MusicInfoLoader.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 
+using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace MUSIC_INFO;
@@ -38,7 +41,8 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
 {
   const auto& components = CServiceBroker::GetAppComponents();
   const auto appPlayer = components.GetComponent<CApplicationPlayer>();
-  if (item && (item->IsAudio() || (item->IsInternetStream() && appPlayer->IsPlayingAudio())))
+  if (item &&
+      (MUSIC::IsAudio(*item) || (NETWORK::IsInternetStream(*item) && appPlayer->IsPlayingAudio())))
   {
     CLog::Log(LOGDEBUG, "CMusicGUIInfo::InitCurrentItem({})", item->GetPath());
 
@@ -48,7 +52,7 @@ bool CMusicGUIInfo::InitCurrentItem(CFileItem *item)
     tag->SetLoaded(true);
 
     // find a thumb for this file.
-    if (item->IsInternetStream() && !item->IsMusicDb())
+    if (NETWORK::IsInternetStream(*item) && !MUSIC::IsMusicDb(*item))
     {
       if (!g_application.m_strPlayListFile.empty())
       {
@@ -356,7 +360,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FILENAME:
       case LISTITEM_FILE_EXTENSION:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = URIUtils::GetFileName(tag->GetURL());
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
@@ -371,7 +375,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         return true;
       case LISTITEM_FOLDERNAME:
       case LISTITEM_PATH:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = URIUtils::GetDirectory(tag->GetURL());
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;
@@ -387,7 +391,7 @@ bool CMusicGUIInfo::GetLabel(std::string& value, const CFileItem *item, int cont
         }
         return true;
       case LISTITEM_FILENAME_AND_PATH:
-        if (item->IsMusicDb())
+        if (MUSIC::IsMusicDb(*item))
           value = tag->GetURL();
         else if (item->HasVideoInfoTag()) // special handling for music videos, which have both a videotag and a musictag
           break;

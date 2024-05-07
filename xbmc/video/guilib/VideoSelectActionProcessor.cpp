@@ -9,6 +9,7 @@
 #include "VideoSelectActionProcessor.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "dialogs/GUIDialogSelect.h"
@@ -23,7 +24,8 @@
 #include "video/VideoInfoTag.h"
 #include "video/guilib/VideoGUIUtils.h"
 
-using namespace VIDEO::GUILIB;
+namespace KODI::VIDEO::GUILIB
+{
 
 Action CVideoSelectActionProcessorBase::GetDefaultSelectAction()
 {
@@ -106,7 +108,7 @@ Action CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const
 {
   CContextButtons choices;
 
-  const std::string resumeString = VIDEO_UTILS::GetResumeString(*m_item);
+  const std::string resumeString = UTILS::GetResumeString(*m_item);
   if (!resumeString.empty())
   {
     choices.Add(ACTION_RESUME, resumeString);
@@ -123,3 +125,5 @@ Action CVideoSelectActionProcessorBase::ChooseVideoItemSelectAction() const
 
   return static_cast<Action>(CGUIDialogContextMenu::ShowAndGetChoice(choices));
 }
+
+} // namespace KODI::VIDEO::GUILIB

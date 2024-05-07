@@ -96,7 +96,7 @@ protected:
    \param action the action to perform
    \return true if the action is performed, false otherwise
    */
-  bool OnFileAction(int item, VIDEO::GUILIB::Action action, const std::string& player);
+  bool OnFileAction(int item, KODI::VIDEO::GUILIB::Action action, const std::string& player);
 
   void OnRestartItem(int iItem, const std::string &player = "");
   bool OnPlayOrResumeItem(int iItem, const std::string& player = "");
@@ -118,7 +118,9 @@ protected:
 
   void OnSearch();
   void OnSearchItemFound(const CFileItem* pSelItem);
-  int GetScraperForItem(CFileItem *item, ADDON::ScraperPtr &info, VIDEO::SScanSettings& settings);
+  int GetScraperForItem(CFileItem* item,
+                        ADDON::ScraperPtr& info,
+                        KODI::VIDEO::SScanSettings& settings);
 
   static bool OnUnAssignContent(const std::string &path, int header, int text);
 
@@ -143,4 +145,6 @@ private:
    \return true: the information of the item was modified. false: no change.
    */
   bool ShowInfo(const CFileItemPtr& item, const ADDON::ScraperPtr& content);
+
+  bool m_forceSelection;
 };

@@ -9,6 +9,7 @@
 #include "MusicUtils.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIPassword.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
@@ -28,7 +29,9 @@
 #include "media/MediaType.h"
 #include "music/MusicDatabase.h"
 #include "music/MusicDbUrl.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
+#include "network/NetworkFileItemClassify.h"
 #include "playlists/PlayList.h"
 #include "playlists/PlayListFactory.h"
 #include "profiles/ProfileManager.h"
@@ -40,10 +43,13 @@
 #include "utils/StringUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "view/GUIViewState.h"
 
 #include <memory>
 
+using namespace KODI;
+using namespace KODI::VIDEO;
 using namespace MUSIC_INFO;
 using namespace XFILE;
 using namespace std::chrono_literals;
@@ -500,7 +506,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
   if (item->IsParentFolder() || !item->CanQueue() || item->IsRAR() || item->IsZIP())
     return;
 
-  if (item->IsMusicDb() && item->m_bIsFolder && !item->IsParentFolder())
+  if (MUSIC::IsMusicDb(*item) && item->m_bIsFolder && !item->IsParentFolder())
   {
     // we have a music database folder, just grab the "all" item underneath it
     XFILE::CMusicDatabaseDirectory dir;
@@ -596,7 +602,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
         GetItemsForPlaylist((*playList)[i]);
       }
     }
-    else if (item->IsInternetStream() && !item->IsMusicDb())
+    else if (NETWORK::IsInternetStream(*item) && !MUSIC::IsMusicDb(*item))
     {
       // just queue the internet stream, it will be expanded on play
       m_queuedItems.Add(item);
@@ -606,7 +612,7 @@ void CAsyncGetItemsForPlaylist::GetItemsForPlaylist(const std::shared_ptr<CFileI
       // python files can be played
       m_queuedItems.Add(item);
     }
-    else if (!item->IsNFO() && (item->IsAudio() || item->IsVideo()))
+    else if (!item->IsNFO() && (MUSIC::IsAudio(*item) || IsVideo(*item)))
     {
       const auto itemCheck = m_queuedItems.Get(item->GetPath());
       if (!itemCheck || itemCheck->GetStartOffset() != item->GetStartOffset())
@@ -873,7 +879,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   // Exclude all video library items
-  if (item.IsVideoDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
+  if (IsVideoDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://video/"))
     return false;
 
   // Exclude other components
@@ -913,7 +919,7 @@ bool IsItemPlayable(const CFileItem& item)
     return false;
 
   if (item.m_bIsFolder &&
-      (item.IsMusicDb() || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
+      (MUSIC::IsMusicDb(item) || StringUtils::StartsWithNoCase(item.GetPath(), "library://music/")))
   {
     // Exclude top level nodes - eg can't play 'genres' just a specific genre etc
     const XFILE::MUSICDATABASEDIRECTORY::NODE_TYPE node =
@@ -926,7 +932,7 @@ bool IsItemPlayable(const CFileItem& item)
 
   if (item.HasMusicInfoTag() && item.CanQueue())
     return true;
-  else if (!item.m_bIsFolder && item.IsAudio())
+  else if (!item.m_bIsFolder && MUSIC::IsAudio(item))
     return true;
   else if (item.m_bIsFolder)
   {

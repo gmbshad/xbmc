@@ -12,6 +12,7 @@
 #include "PlayListFactory.h"
 #include "Util.h"
 #include "filesystem/File.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "utils/CharsetConverter.h"
 #include "utils/StringUtils.h"
@@ -19,6 +20,7 @@
 #include "utils/XBMCTinyXML.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
 #include <iostream>
@@ -26,6 +28,7 @@
 #include <string>
 #include <vector>
 
+using namespace KODI;
 using namespace XFILE;
 using namespace PLAYLIST;
 
@@ -137,7 +140,7 @@ bool CPlayListPLS::Load(const std::string &strFile)
         if (m_vecItems[idx - 1]->GetLabel().empty())
           m_vecItems[idx - 1]->SetLabel(URIUtils::GetFileName(strValue));
         CFileItem item(strValue, false);
-        if (bShoutCast && !item.IsAudio())
+        if (bShoutCast && !MUSIC::IsAudio(item))
           strValue.replace(0, 7, "shout://");
 
         strValue = URIUtils::SubstitutePath(strValue);
@@ -272,7 +275,8 @@ bool CPlayListASX::LoadAsxIniInfo(std::istream &stream)
     CLog::Log(LOGINFO, "Adding element {}={}", name, value);
     CFileItemPtr newItem(new CFileItem(value));
     newItem->SetPath(value);
-    if (newItem->IsVideo() && !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
+    if (VIDEO::IsVideo(*newItem) &&
+        !newItem->HasVideoInfoTag()) // File is a video and needs a VideoInfoTag
       newItem->GetVideoInfoTag()->Reset(); // Force VideoInfoTag creation
     Add(newItem);
   }

@@ -1,5 +1,5 @@
 /*
- *  Copyright (C) 2005-2018 Team Kodi
+ *  Copyright (C) 2005-2024 Team Kodi
  *  This file is part of Kodi - https://kodi.tv
  *
  *  SPDX-License-Identifier: GPL-2.0-or-later
@@ -222,8 +222,7 @@ bool CRenderSystemGL::ResetRenderSystem(int width, int height)
   }
 
   glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-  glEnable(GL_BLEND);          // Turn Blending On
-  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND); // Turn Blending On
 
   return true;
 }
@@ -266,6 +265,30 @@ bool CRenderSystemGL::EndRender()
   return true;
 }
 
+void CRenderSystemGL::InvalidateColorBuffer()
+{
+  if (!m_bRenderCreated)
+    return;
+
+  /* clear is not affected by stipple pattern, so we can only clear on first frame */
+  if (m_stereoMode == RENDER_STEREO_MODE_INTERLACED && m_stereoView == RENDER_STEREO_VIEW_RIGHT)
+    return;
+
+  // some platforms prefer a clear, instead of rendering over
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiGeometryClear)
+  {
+    ClearBuffers(0);
+    return;
+  }
+
+  if (!CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+    return;
+
+  glClearDepthf(0);
+  glDepthMask(GL_TRUE);
+  glClear(GL_DEPTH_BUFFER_BIT);
+}
+
 bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
 {
   if (!m_bRenderCreated)
@@ -283,6 +306,14 @@ bool CRenderSystemGL::ClearBuffers(UTILS::COLOR::Color color)
   glClearColor(r, g, b, a);
 
   GLbitfield flags = GL_COLOR_BUFFER_BIT;
+
+  if (CServiceBroker::GetSettingsComponent()->GetAdvancedSettings()->m_guiFrontToBackRendering)
+  {
+    glClearDepthf(0);
+    glDepthMask(GL_TRUE);
+    flags |= GL_DEPTH_BUFFER_BIT;
+  }
+
   glClear(flags);
 
   return true;
@@ -505,6 +536,27 @@ void CRenderSystemGL::ResetScissors()
   SetScissors(CRect(0, 0, (float)m_width, (float)m_height));
 }
 
+void CRenderSystemGL::SetDepthCulling(DEPTH_CULLING culling)
+{
+  if (culling == DEPTH_CULLING_OFF)
+  {
+    glDisable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+  }
+  else if (culling == DEPTH_CULLING_BACK_TO_FRONT)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_FALSE);
+    glDepthFunc(GL_GEQUAL);
+  }
+  else if (culling == DEPTH_CULLING_FRONT_TO_BACK)
+  {
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);
+    glDepthFunc(GL_GREATER);
+  }
+}
+
 void CRenderSystemGL::GetGLSLVersion(int& major, int& minor)
 {
   major = m_glslMajor;
@@ -682,13 +734,24 @@ void CRenderSystemGL::InitialiseShaders()
     CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_multi.glsl - compile and link failed");
   }
 
-  m_pShader[ShaderMethodGL::SM_FONTS] =
-      std::make_unique<CGLShader>("gl_shader_frag_fonts.glsl", defines);
+  m_pShader[ShaderMethodGL::SM_FONTS] = std::make_unique<CGLShader>(
+      "gl_shader_vert_simple.glsl", "gl_shader_frag_fonts.glsl", defines);
   if (!m_pShader[ShaderMethodGL::SM_FONTS]->CompileAndLink())
   {
     m_pShader[ShaderMethodGL::SM_FONTS]->Free();
     m_pShader[ShaderMethodGL::SM_FONTS].reset();
-    CLog::Log(LOGERROR, "GUI Shader gl_shader_frag_fonts.glsl - compile and link failed");
+    CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_simple.glsl + gl_shader_frag_fonts.glsl - "
+                        "compile and link failed");
+  }
+
+  m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP] =
+      std::make_unique<CGLShader>("gl_shader_vert_clip.glsl", "gl_shader_frag_fonts.glsl", defines);
+  if (!m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->CompileAndLink())
+  {
+    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->Free();
+    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP].reset();
+    CLog::Log(LOGERROR, "GUI Shader gl_shader_vert_clip.glsl + gl_shader_frag_fonts.glsl - compile "
+                        "and link failed");
   }
 
   m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND] =
@@ -731,6 +794,10 @@ void CRenderSystemGL::ReleaseShaders()
   if (m_pShader[ShaderMethodGL::SM_FONTS])
     m_pShader[ShaderMethodGL::SM_FONTS]->Free();
   m_pShader[ShaderMethodGL::SM_FONTS].reset();
+
+  if (m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP])
+    m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP]->Free();
+  m_pShader[ShaderMethodGL::SM_FONTS_SHADER_CLIP].reset();
 
   if (m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND])
     m_pShader[ShaderMethodGL::SM_TEXTURE_NOBLEND]->Free();
@@ -795,6 +862,14 @@ GLint CRenderSystemGL::ShaderGetCoord1()
   return -1;
 }
 
+GLint CRenderSystemGL::ShaderGetDepth()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetDepthLoc();
+
+  return -1;
+}
+
 GLint CRenderSystemGL::ShaderGetUniCol()
 {
   if (m_pShader[m_method])
@@ -807,6 +882,30 @@ GLint CRenderSystemGL::ShaderGetModel()
 {
   if (m_pShader[m_method])
     return m_pShader[m_method]->GetModelLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGL::ShaderGetMatrix()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetMatrixLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGL::ShaderGetClip()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderClipLoc();
+
+  return -1;
+}
+
+GLint CRenderSystemGL::ShaderGetCoordStep()
+{
+  if (m_pShader[m_method])
+    return m_pShader[m_method]->GetShaderCoordStepLoc();
 
   return -1;
 }

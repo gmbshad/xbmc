@@ -60,6 +60,9 @@
 #include "filesystem/DirectoryFactory.h"
 #include "filesystem/DllLibCurl.h"
 #include "filesystem/File.h"
+#include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
+#include "video/VideoFileItemClassify.h"
 #ifdef HAS_FILESYSTEM_NFS
 #include "filesystem/NFSFile.h"
 #endif
@@ -190,7 +193,6 @@ using namespace XFILE;
 #ifdef HAS_OPTICAL_DRIVE
 using namespace MEDIA_DETECT;
 #endif
-using namespace VIDEO;
 using namespace MUSIC_INFO;
 using namespace EVENTSERVER;
 using namespace JSONRPC;
@@ -808,7 +810,16 @@ void CApplication::Render()
     return;
 
   // render gui layer
-  if (appPower->GetRenderGUI() && !m_skipGuiRender)
+  const bool renderGUI = appPower->GetRenderGUI();
+  if (m_guiRenderLastState != std::nullopt && renderGUI && m_guiRenderLastState != renderGUI)
+  {
+    CGUIComponent* gui = CServiceBroker::GetGUI();
+    if (gui)
+      CServiceBroker::GetGUI()->GetWindowManager().MarkDirty();
+  }
+  m_guiRenderLastState = renderGUI;
+
+  if (renderGUI && !m_skipGuiRender)
   {
     if (CServiceBroker::GetWinSystem()->GetGfxContext().GetStereoMode())
     {
@@ -2188,7 +2199,7 @@ bool CApplication::PlayMedia(CFileItem& item, const std::string& player, PLAYLIS
       return ProcessAndStartPlaylist(smartpl.GetName(), playlist, smartplPlaylistId);
     }
   }
-  else if (item.IsPlayList() || item.IsInternetStream())
+  else if (item.IsPlayList() || NETWORK::IsInternetStream(item))
   {
     // Not owner. Dialog auto-deletes itself.
     CGUIDialogCache* dlgCache =
@@ -2284,7 +2295,10 @@ bool CApplication::PlayStack(CFileItem& item, bool bRestart)
   return PlayFile(selectedStackPart, "", true);
 }
 
-bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRestart)
+bool CApplication::PlayFile(CFileItem item,
+                            const std::string& player,
+                            bool bRestart /* = false */,
+                            bool forceSelection /* = false */)
 {
   // Ensure the MIME type has been retrieved for http:// and shout:// streams
   if (item.GetMimeType().empty())
@@ -2301,11 +2315,11 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     m_nextPlaylistItem = -1;
     stackHelper->Clear();
 
-    if (item.IsVideo())
+    if (VIDEO::IsVideo(item))
       CUtil::ClearSubtitles();
   }
 
-  if (item.IsDiscStub())
+  if (VIDEO::IsDiscStub(item))
   {
     return CServiceBroker::GetMediaManager().playStubFile(item);
   }
@@ -2346,7 +2360,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   {
     // the following code block is only applicable when bRestart is false OR to ISO stacks
 
-    if (item.IsVideo())
+    if (VIDEO::IsVideo(item))
     {
       // open the d/b and retrieve the bookmarks for the current movie
       CVideoDatabase dbs;
@@ -2354,7 +2368,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
       std::string path = item.GetPath();
       std::string videoInfoTagPath(item.GetVideoInfoTag()->m_strFileNameAndPath);
-      if (videoInfoTagPath.find("removable://") == 0 || item.IsVideoDb())
+      if (videoInfoTagPath.find("removable://") == 0 || VIDEO::IsVideoDb(item))
         path = videoInfoTagPath;
 
       // Note that we need to load the tag from database also if the item already has a tag,
@@ -2424,7 +2438,8 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
 
   // a disc image might be Blu-Ray disc
   if (!(options.startpercent > 0.0 || options.starttime > 0.0) &&
-      (item.IsBDFile() || item.IsDiscImage()))
+      (VIDEO::IsBDFile(item) || item.IsDiscImage() ||
+       (forceSelection && VIDEO::IsBlurayPlaylist(item))))
   {
     // No video selection when using external or remote players (they handle it if supported)
     const bool isSimpleMenuAllowed = [&]()
@@ -2442,7 +2457,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
     if (isSimpleMenuAllowed)
     {
       // Check if we must show the simplified bd menu.
-      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item))
+      if (!CGUIDialogSimpleMenu::ShowPlaySelection(item, forceSelection))
         return true;
     }
   }
@@ -2450,7 +2465,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
   // this really aught to be inside !bRestart, but since PlayStack
   // uses that to init playback, we have to keep it outside
   const PLAYLIST::Id playlistId = CServiceBroker::GetPlaylistPlayer().GetCurrentPlaylist();
-  if (item.IsAudio() && playlistId == PLAYLIST::TYPE_MUSIC)
+  if (MUSIC::IsAudio(item) && playlistId == PLAYLIST::TYPE_MUSIC)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
     options.fullscreen = !CServiceBroker::GetPlaylistPlayer().HasPlayedFirstFile() &&
@@ -2458,7 +2473,7 @@ bool CApplication::PlayFile(CFileItem item, const std::string& player, bool bRes
         CSettings::SETTING_MUSICFILES_SELECTACTION) &&
         !CMediaSettings::GetInstance().DoesMediaStartWindowed();
   }
-  else if (item.IsVideo() && playlistId == PLAYLIST::TYPE_VIDEO &&
+  else if (VIDEO::IsVideo(item) && playlistId == PLAYLIST::TYPE_VIDEO &&
            CServiceBroker::GetPlaylistPlayer().GetPlaylist(playlistId).size() > 1)
   { // playing from a playlist by the looks
     // don't switch to fullscreen if we are not playing the first item...
@@ -2568,7 +2583,7 @@ void CApplication::PlaybackCleanup()
 
   // DVD ejected while playing in vis ?
   if (!appPlayer->IsPlayingAudio() &&
-      (m_itemCurrentFile->IsCDDA() || m_itemCurrentFile->IsOnDVD()) &&
+      (MUSIC::IsCDDA(*m_itemCurrentFile) || m_itemCurrentFile->IsOnDVD()) &&
       !CServiceBroker::GetMediaManager().IsDiscInDrive() &&
       CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow() == WINDOW_VISUALISATION)
   {
@@ -2783,9 +2798,9 @@ bool CApplication::OnMessage(CGUIMessage& message)
       bool bNothingToQueue = false;
 
       const auto appPlayer = GetComponent<CApplicationPlayer>();
-      if (!file.IsVideo() && appPlayer->IsPlayingVideo())
+      if (!VIDEO::IsVideo(file) && appPlayer->IsPlayingVideo())
         bNothingToQueue = true;
-      else if ((!file.IsAudio() || file.IsVideo()) && appPlayer->IsPlayingAudio())
+      else if ((!MUSIC::IsAudio(file) || VIDEO::IsVideo(file)) && appPlayer->IsPlayingAudio())
         bNothingToQueue = true;
 
       if (bNothingToQueue)
@@ -3053,7 +3068,7 @@ bool CApplication::ExecuteXBMCAction(std::string actionStr,
     }
     else
 #endif
-    if (item.IsAudio() || item.IsVideo() || item.IsGame())
+        if (MUSIC::IsAudio(item) || VIDEO::IsVideo(item) || item.IsGame())
     { // an audio or video file
       PlayFile(item, "");
     }
@@ -3174,10 +3189,8 @@ void CApplication::ProcessSlow()
 
   // Temporarily pause pausable jobs when viewing video/picture
   int currentWindow = CServiceBroker::GetGUI()->GetWindowManager().GetActiveWindow();
-  if (CurrentFileItem().IsVideo() ||
-      CurrentFileItem().IsPicture() ||
-      currentWindow == WINDOW_FULLSCREEN_VIDEO ||
-      currentWindow == WINDOW_FULLSCREEN_GAME ||
+  if (VIDEO::IsVideo(CurrentFileItem()) || CurrentFileItem().IsPicture() ||
+      currentWindow == WINDOW_FULLSCREEN_VIDEO || currentWindow == WINDOW_FULLSCREEN_GAME ||
       currentWindow == WINDOW_SLIDESHOW)
   {
     CServiceBroker::GetJobManager()->PauseJobs();

@@ -11,6 +11,7 @@
 #include "Connection.h"
 #include "OSScreenSaverWebOS.h"
 #include "Registry.h"
+#include "SeatWebOS.h"
 #include "ShellSurfaceWebOSShell.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
@@ -148,6 +149,11 @@ std::unique_ptr<KODI::WINDOWING::IOSScreenSaver> CWinSystemWaylandWebOS::GetOSSc
   return std::make_unique<COSScreenSaverWebOS>();
 }
 
+std::unique_ptr<CSeat> CWinSystemWaylandWebOS::CreateSeat(std::uint32_t name, wayland::seat_t& seat)
+{
+  return std::make_unique<CSeatWebOS>(name, seat, *GetConnection());
+}
+
 bool CWinSystemWaylandWebOS::OnAppLifecycleEventWrapper(LSHandle* sh, LSMessage* reply, void* ctx)
 {
   HContext* context = static_cast<HContext*>(ctx);
@@ -164,23 +170,14 @@ void CWinSystemWaylandWebOS::OnConfigure(std::uint32_t serial,
   // intercept minimized event, passing the minimized event causes a weird animation
   if (state.none())
   {
-    m_resumePlayback = false;
-
-    if (player->IsPlaying() && player->HasVideo() && !player->IsPaused())
+    if (player)
     {
       CServiceBroker::GetAppMessenger()->SendMsg(TMSG_GUI_ACTION, WINDOW_INVALID, -1,
-                                                 static_cast<void*>(new CAction(ACTION_PAUSE)));
-      m_resumePlayback = true;
+                                                 static_cast<void*>(new CAction(ACTION_STOP)));
     }
   }
   else
   {
-    if (m_resumePlayback && player->IsPlaying() && player->HasVideo() && player->IsPaused())
-    {
-      CServiceBroker::GetAppMessenger()->SendMsg(
-          TMSG_GUI_ACTION, WINDOW_INVALID, -1, static_cast<void*>(new CAction(ACTION_PLAYER_PLAY)));
-      m_resumePlayback = false;
-    }
     CWinSystemWayland::OnConfigure(serial, size, state);
   }
 }

@@ -9,6 +9,7 @@
 #include "VideoUtils.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "ServiceBroker.h"
 #include "Util.h"
 #include "filesystem/Directory.h"
@@ -17,17 +18,23 @@
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "settings/lib/Setting.h"
+#include "utils/FileUtils.h"
 #include "utils/URIUtils.h"
 #include "utils/log.h"
 #include "video/VideoDatabase.h"
+#include "video/VideoFileItemClassify.h"
 #include "video/VideoInfoTag.h"
 
+#include <algorithm>
+#include <array>
 #include <cstdint>
 #include <vector>
 
+using namespace KODI::VIDEO;
+
 namespace
 {
-VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
+KODI::VIDEO::UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& item)
 {
   if (!item.m_bIsFolder)
     return {};
@@ -77,7 +84,7 @@ VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& i
 
   if (folderItem.IsResumable())
   {
-    VIDEO_UTILS::ResumeInformation resumeInfo;
+    KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
     resumeInfo.isResumable = true;
     return resumeInfo;
   }
@@ -85,7 +92,7 @@ VIDEO_UTILS::ResumeInformation GetFolderItemResumeInformation(const CFileItem& i
   return {};
 }
 
-VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
+KODI::VIDEO::UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem& item)
 {
   // do not resume nfo files
   if (item.IsNFO())
@@ -99,7 +106,7 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
   if (item.IsLiveTV() || item.IsDeleted())
     return {};
 
-  VIDEO_UTILS::ResumeInformation resumeInfo;
+  KODI::VIDEO::UTILS::ResumeInformation resumeInfo;
 
   if (item.GetCurrentResumeTimeAndPartNumber(resumeInfo.startOffset, resumeInfo.partNumber))
   {
@@ -121,13 +128,13 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
     }
 
     std::string path = item.GetPath();
-    if (item.IsVideoDb() || item.IsDVD())
+    if (IsVideoDb(item) || item.IsDVD())
     {
       if (item.HasVideoInfoTag())
       {
         path = item.GetVideoInfoTag()->m_strFileNameAndPath;
       }
-      else if (item.IsVideoDb())
+      else if (IsVideoDb(item))
       {
         // Obtain path+filename from video db
         XFILE::VIDEODATABASEDIRECTORY::CQueryParams params;
@@ -175,8 +182,29 @@ VIDEO_UTILS::ResumeInformation GetNonFolderItemResumeInformation(const CFileItem
 
 } // unnamed namespace
 
-namespace VIDEO_UTILS
+namespace KODI::VIDEO::UTILS
 {
+std::string GetOpticalMediaPath(const CFileItem& item)
+{
+  auto exists = [&item](const std::string& file)
+  {
+    const std::string path = URIUtils::AddFileToFolder(item.GetPath(), file);
+    return CFileUtils::Exists(path);
+  };
+
+  using namespace std::string_literals;
+  const auto files = std::array{
+      "VIDEO_TS.IFO"s,    "VIDEO_TS/VIDEO_TS.IFO"s,
+#ifdef HAVE_LIBBLURAY
+      "index.bdmv"s,      "INDEX.BDM"s,
+      "BDMV/index.bdmv"s, "BDMV/INDEX.BDM"s,
+#endif
+  };
+
+  const auto it = std::find_if(files.begin(), files.end(), exists);
+  return it != files.end() ? URIUtils::AddFileToFolder(item.GetPath(), *it) : std::string{};
+}
+
 bool IsAutoPlayNextItem(const CFileItem& item)
 {
   if (!item.HasVideoInfoTag())
@@ -253,4 +281,4 @@ ResumeInformation GetStackPartResumeInformation(const CFileItem& item, unsigned 
   return resumeInfo;
 }
 
-} // namespace VIDEO_UTILS
+} // namespace KODI::VIDEO::UTILS

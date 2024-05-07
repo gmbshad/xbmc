@@ -9,6 +9,7 @@
 #include "GUIDialogVideoManager.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "MediaSource.h"
 #include "ServiceBroker.h"
@@ -36,6 +37,8 @@
 #include <algorithm>
 #include <string>
 
+using namespace KODI;
+
 static constexpr unsigned int CONTROL_LABEL_TITLE = 2;
 
 static constexpr unsigned int CONTROL_BUTTON_PLAY = 21;
@@ -51,9 +54,6 @@ CGUIDialogVideoManager::CGUIDialogVideoManager(int windowId)
     m_selectedVideoAsset(std::make_shared<CFileItem>())
 {
   m_loadType = KEEP_IN_MEMORY;
-
-  if (!m_database.Open())
-    CLog::LogF(LOGERROR, "Failed to open video database!");
 }
 
 bool CGUIDialogVideoManager::OnMessage(CGUIMessage& message)
@@ -115,6 +115,9 @@ bool CGUIDialogVideoManager::OnAction(const CAction& action)
 
 void CGUIDialogVideoManager::OnInitWindow()
 {
+  if (!m_database.IsOpen() && !m_database.Open())
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+
   CGUIDialog::OnInitWindow();
 
   SET_CONTROL_LABEL(CONTROL_LABEL_TITLE,
@@ -125,6 +128,12 @@ void CGUIDialogVideoManager::OnInitWindow()
   OnMessage(msg);
 
   UpdateControls();
+}
+
+void CGUIDialogVideoManager::OnDeinitWindow(int nextWindowID)
+{
+  CGUIDialog::OnDeinitWindow(nextWindowID);
+  m_database.Close();
 }
 
 void CGUIDialogVideoManager::Clear()
@@ -198,6 +207,9 @@ void CGUIDialogVideoManager::UpdateControls()
 
 void CGUIDialogVideoManager::Refresh()
 {
+  if (!m_database.IsOpen() && !m_database.Open())
+    CLog::LogF(LOGERROR, "Failed to open video database!");
+
   Clear();
 
   const int dbId{m_videoAsset->GetVideoInfoTag()->m_iDbId};
@@ -277,7 +289,7 @@ private:
     const ContentUtils::PlayMode mode{m_item->GetProperty("CheckAutoPlayNextItem").asBoolean()
                                           ? ContentUtils::PlayMode::CHECK_AUTO_PLAY_NEXT_ITEM
                                           : ContentUtils::PlayMode::PLAY_ONLY_THIS};
-    VIDEO_UTILS::PlayItem(m_item, "", mode);
+    VIDEO::UTILS::PlayItem(m_item, "", mode);
   }
 };
 } // unnamed namespace
@@ -301,8 +313,7 @@ void CGUIDialogVideoManager::Remove()
     return;
   }
 
-  //! @todo db refactor: should not be version, but asset
-  m_database.RemoveVideoVersion(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
+  m_database.DeleteVideoAsset(m_selectedVideoAsset->GetVideoInfoTag()->m_iDbId);
 
   // refresh data and controls
   Refresh();

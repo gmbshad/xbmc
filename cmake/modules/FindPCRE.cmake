@@ -33,11 +33,16 @@ macro(buildPCRE)
                  -DPCRE_SUPPORT_UNICODE_PROPERTIES=ON
                  -DPCRE_SUPPORT_LIBZ=OFF
                  -DPCRE_SUPPORT_LIBBZ2=OFF
+                 -DPCRE_BUILD_PCRECPP=OFF
                  -DPCRE_BUILD_PCREGREP=OFF
                  -DPCRE_BUILD_TESTS=OFF)
 
   if(WIN32 OR WINDOWS_STORE)
     list(APPEND CMAKE_ARGS -DINSTALL_MSVC_PDB=ON)
+
+    # PCRE fails due to C4703 and C4146 when /SDL is enabled
+    set(PCRE_C_FLAGS "/sdl-")
+    set(PCRE_CXX_FLAGS "/sdl-")
   elseif(CORE_SYSTEM_NAME STREQUAL android)
     # CMake CheckFunctionExists incorrectly detects strtoq for android
     list(APPEND CMAKE_ARGS -DHAVE_STRTOQ=0)

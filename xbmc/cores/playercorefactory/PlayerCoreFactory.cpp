@@ -16,6 +16,7 @@
 #include "cores/VideoPlayer/Interface/InputStreamConstants.h"
 #include "dialogs/GUIDialogContextMenu.h"
 #include "guilib/LocalizeStrings.h"
+#include "music/MusicFileItemClassify.h"
 #include "profiles/ProfileManager.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
@@ -25,11 +26,14 @@
 #include "utils/StringUtils.h"
 #include "utils/XMLUtils.h"
 #include "utils/log.h"
+#include "video/VideoFileItemClassify.h"
 
 #include <mutex>
 #include <sstream>
 
 #define PLAYERCOREFACTORY_XML "playercorefactory.xml"
+
+using namespace KODI;
 
 CPlayerCoreFactory::CPlayerCoreFactory(const CProfileManager& profileManager)
   : m_settings(CServiceBroker::GetSettingsComponent()->GetSettings()),
@@ -141,7 +145,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   // "videodefaultplayer"
   if (defaultInputstreamPlayerOverride == ForcedPlayer::VIDEO_DEFAULT ||
       (defaultInputstreamPlayerOverride == ForcedPlayer::NONE &&
-       (item.IsVideo() || (!item.IsAudio() && !item.IsGame()))))
+       (VIDEO::IsVideo(item) || (!MUSIC::IsAudio(item) && !item.IsGame()))))
   {
     int idx = GetPlayerIndex("videodefaultplayer");
     if (idx > -1)
@@ -161,7 +165,7 @@ void CPlayerCoreFactory::GetPlayers(const CFileItem& item, std::vector<std::stri
   // Set audio default player
   // Pushback all audio players in case we don't know the type
   if (defaultInputstreamPlayerOverride == ForcedPlayer::AUDIO_DEFAULT ||
-      (defaultInputstreamPlayerOverride == ForcedPlayer::NONE && item.IsAudio()))
+      (defaultInputstreamPlayerOverride == ForcedPlayer::NONE && MUSIC::IsAudio(item)))
   {
     int idx = GetPlayerIndex("audiodefaultplayer");
     if (idx > -1)

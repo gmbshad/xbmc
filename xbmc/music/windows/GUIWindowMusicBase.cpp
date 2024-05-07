@@ -10,6 +10,7 @@
 
 #include "Autorun.h"
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIInfoManager.h"
 #include "GUIPassword.h"
 #include "GUIUserMessages.h"
@@ -22,6 +23,9 @@
 #include "application/Application.h"
 #include "application/ApplicationComponents.h"
 #include "application/ApplicationPlayer.h"
+#include "music/MusicFileItemClassify.h"
+#include "network/NetworkFileItemClassify.h"
+#include "video/VideoFileItemClassify.h"
 #ifdef HAS_CDDA_RIPPER
 #include "cdrip/CDDARipper.h"
 #endif
@@ -71,8 +75,10 @@ using namespace XFILE;
 using namespace MUSICDATABASEDIRECTORY;
 using namespace MUSIC_GRABBER;
 using namespace MUSIC_INFO;
+using namespace KODI;
 using namespace KODI::MESSAGING;
 using KODI::MESSAGING::HELPERS::DialogResponse;
+using namespace KODI::VIDEO;
 
 using namespace std::chrono_literals;
 
@@ -297,7 +303,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
   CFileItemPtr item = m_vecItems->Get(iItem);
 
   // Match visibility test of CMusicInfo::IsVisible
-  if (item->IsVideoDb() && item->HasVideoInfoTag() &&
+  if (IsVideoDb(*item) && item->HasVideoInfoTag() &&
       (item->HasProperty("artist_musicid") || item->HasProperty("album_musicid")))
   {
     // Music video artist or album (navigation by music > music video > artist))
@@ -305,7 +311,7 @@ void CGUIWindowMusicBase::OnItemInfo(int iItem)
     return;
   }
 
-  if (item->IsVideo() && item->HasVideoInfoTag() &&
+  if (IsVideo(*item) && item->HasVideoInfoTag() &&
       item->GetVideoInfoTag()->m_type == MediaTypeMusicVideo)
   { // Music video on a mixed current playlist or navigation by music > music video > artist > video
     CGUIDialogVideoInfo::ShowFor(*item);
@@ -348,7 +354,8 @@ void CGUIWindowMusicBase::RetrieveMusicInfo()
   for (int i = 0; i < m_vecItems->Size(); ++i)
   {
     CFileItemPtr pItem = (*m_vecItems)[i];
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || pItem->IsLyrics() || pItem->IsVideo())
+    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() ||
+        MUSIC::IsLyrics(*pItem) || IsVideo(*pItem))
       continue;
 
     CMusicInfoTag& tag = *pItem->GetMusicInfoTag();
@@ -405,9 +412,8 @@ void CGUIWindowMusicBase::UpdateButtons()
 {
   CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNRIP, CServiceBroker::GetMediaManager().IsAudio());
 
-  CONTROL_ENABLE_ON_CONDITION(CONTROL_BTNSCAN,
-                              !(m_vecItems->IsVirtualDirectoryRoot() ||
-                                m_vecItems->IsMusicDb()));
+  CONTROL_ENABLE_ON_CONDITION(
+      CONTROL_BTNSCAN, !(m_vecItems->IsVirtualDirectoryRoot() || MUSIC::IsMusicDb(*m_vecItems)));
 
   if (CMusicLibraryQueue::GetInstance().IsScanningLibrary())
     SET_CONTROL_LABEL(CONTROL_BTNSCAN, 14056); // Stop Scan
@@ -452,7 +458,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
       }
 #ifdef HAS_OPTICAL_DRIVE
       // enable Rip CD Audio or Track button if we have an audio disc
-      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA())
+      if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*m_vecItems))
       {
         // those cds can also include Audio Tracks: CDExtra and MixedMode!
         MEDIA_DETECT::CCdInfo* pCdInfo = CServiceBroker::GetMediaManager().GetCdInfo();
@@ -463,7 +469,7 @@ void CGUIWindowMusicBase::GetContextButtons(int itemNumber, CContextButtons &but
     }
 
     // enable CDDB lookup if the current dir is CDDA
-    if (CServiceBroker::GetMediaManager().IsDiscInDrive() && m_vecItems->IsCDDA() &&
+    if (CServiceBroker::GetMediaManager().IsDiscInDrive() && MUSIC::IsCDDA(*m_vecItems) &&
         (profileManager->GetCurrentProfile().canWriteDatabases() || g_passwordManager.bMasterUser))
     {
       buttons.Add(CONTEXT_BUTTON_CDDB, 16002);
@@ -561,7 +567,7 @@ void CGUIWindowMusicBase::OnRipCD()
 {
   if (CServiceBroker::GetMediaManager().IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!MUSIC::IsCDDA(g_application.CurrentFileItem()))
     {
 #ifdef HAS_CDDA_RIPPER
       KODI::CDRIP::CCDDARipper::GetInstance().RipCD();
@@ -576,7 +582,7 @@ void CGUIWindowMusicBase::OnRipTrack(int iItem)
 {
   if (CServiceBroker::GetMediaManager().IsAudio())
   {
-    if (!g_application.CurrentFileItem().IsCDDA())
+    if (!MUSIC::IsCDDA(g_application.CurrentFileItem()))
     {
 #ifdef HAS_CDDA_RIPPER
       CFileItemPtr item = m_vecItems->Get(iItem);
@@ -706,7 +712,7 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
     g_partyModeManager.AddUserSongs(playlistTemp, !CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICPLAYER_QUEUEBYDEFAULT));
     return true;
   }
-  else if (!pItem->IsPlayList() && !pItem->IsInternetStream())
+  else if (!pItem->IsPlayList() && !NETWORK::IsInternetStream(*pItem))
   { // single music file - if we get here then we have autoplaynextitem turned off or queuebydefault
     // turned on, but we still want to use the playlist player in order to handle more queued items
     // following etc.
@@ -728,10 +734,12 @@ bool CGUIWindowMusicBase::OnPlayMedia(int iItem, const std::string &player)
 void CGUIWindowMusicBase::OnRetrieveMusicInfo(CFileItemList& items)
 {
   // No need to attempt to read music file tags for music videos
-  if (items.IsVideoDb())
+  if (IsVideoDb(items))
     return;
-  if (items.GetFolderCount()==items.Size() || items.IsMusicDb() ||
-     (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(CSettings::SETTING_MUSICFILES_USETAGS) && !items.IsCDDA()))
+  if (items.GetFolderCount() == items.Size() || MUSIC::IsMusicDb(items) ||
+      (!CServiceBroker::GetSettingsComponent()->GetSettings()->GetBool(
+           CSettings::SETTING_MUSICFILES_USETAGS) &&
+       !MUSIC::IsCDDA(items)))
   {
     return;
   }
@@ -874,10 +882,9 @@ bool CGUIWindowMusicBase::GetDirectory(const std::string &strDirectory, CFileIte
 bool CGUIWindowMusicBase::CheckFilterAdvanced(CFileItemList &items) const
 {
   const std::string& content = items.GetContent();
-  if ((items.IsMusicDb() || CanContainFilter(m_strFilterPath)) &&
+  if ((MUSIC::IsMusicDb(items) || CanContainFilter(m_strFilterPath)) &&
       (StringUtils::EqualsNoCase(content, "artists") ||
-       StringUtils::EqualsNoCase(content, "albums")  ||
-       StringUtils::EqualsNoCase(content, "songs")))
+       StringUtils::EqualsNoCase(content, "albums") || StringUtils::EqualsNoCase(content, "songs")))
     return true;
 
   return false;
@@ -891,7 +898,7 @@ bool CGUIWindowMusicBase::CanContainFilter(const std::string &strDirectory) cons
 bool CGUIWindowMusicBase::OnSelect(int iItem)
 {
   auto item = m_vecItems->Get(iItem);
-  if (item->IsAudioBook())
+  if (MUSIC::IsAudioBook(*item))
   {
     int bookmark;
     if (m_musicdatabase.GetResumeBookmarkForAudioBook(*item, bookmark) && bookmark > 0)
@@ -1039,7 +1046,7 @@ void CGUIWindowMusicBase::OnPrepareFileItems(CFileItemList &items)
 {
   CGUIMediaWindow::OnPrepareFileItems(items);
 
-  if (!items.IsMusicDb() && !items.IsSmartPlayList())
+  if (!MUSIC::IsMusicDb(items) && !items.IsSmartPlayList())
     RetrieveMusicInfo();
 }
 

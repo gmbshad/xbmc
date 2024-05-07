@@ -9,6 +9,7 @@
 #include "GUIWindowMusicPlaylist.h"
 
 #include "FileItem.h"
+#include "FileItemList.h"
 #include "GUIUserMessages.h"
 #include "PartyModeManager.h"
 #include "PlayListPlayer.h"
@@ -24,6 +25,7 @@
 #include "guilib/LocalizeStrings.h"
 #include "input/actions/Action.h"
 #include "input/actions/ActionIDs.h"
+#include "music/MusicFileItemClassify.h"
 #include "music/tags/MusicInfoTag.h"
 #include "playlists/PlayListM3U.h"
 #include "profiles/ProfileManager.h"
@@ -36,6 +38,8 @@
 #include "utils/Variant.h"
 #include "utils/log.h"
 #include "view/GUIViewState.h"
+
+using namespace KODI;
 
 #define CONTROL_BTNVIEWASICONS 2
 #define CONTROL_BTNSORTBY 3
@@ -335,7 +339,7 @@ void CGUIWindowMusicPlayList::SavePlayList()
 
       //  Musicdatabase items should contain the real path instead of a musicdb url
       //  otherwise the user can't save and reuse the playlist when the musicdb gets deleted
-      if (pItem->IsMusicDb())
+      if (MUSIC::IsMusicDb(*pItem))
         pItem->SetPath(pItem->GetMusicInfoTag()->GetURL());
 
       playlist.Add(pItem);

@@ -94,6 +94,7 @@ struct RefreshVideoLatency
   float refreshmax;
 
   float delay;
+  float hdrextradelay;
 };
 
 typedef std::vector<TVShowRegexp> SETTINGS_TVSHOWLIST;
@@ -163,6 +164,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<RefreshOverride> m_videoAdjustRefreshOverrides;
     std::vector<RefreshVideoLatency> m_videoRefreshLatency;
     float m_videoDefaultLatency;
+    float m_videoDefaultHdrExtraLatency;
     int  m_videoCaptureUseOcclusionQuery;
     bool m_DXVACheckCompatibility;
     bool m_DXVACheckCompatibilityPresent;
@@ -331,6 +333,9 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     bool m_guiVisualizeDirtyRegions;
     int  m_guiAlgorithmDirtyRegions;
     bool m_guiSmartRedraw;
+    int32_t m_guiAnisotropicFiltering{0};
+    bool m_guiFrontToBackRendering{false};
+    bool m_guiGeometryClear{true};
     unsigned int m_addonPackageFolderSize;
 
     bool m_jsonOutputCompact;
@@ -340,7 +345,7 @@ class CAdvancedSettings : public ISettingCallback, public ISettingsHandler
     std::vector<std::string> m_settingsFiles;
     void ParseSettingsFile(const std::string &file);
 
-    float GetLatencyTweak(float refreshrate);
+    float GetLatencyTweak(float refreshrate, bool isHDREnabled);
     bool m_initialized;
 
     void SetDebugMode(bool debug);
