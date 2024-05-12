@@ -24,7 +24,6 @@
 #include <atomic>
 #include <chrono>
 #include <memory>
-#include <optional>
 #include <string>
 #include <vector>
 
@@ -60,7 +59,7 @@ namespace MEDIA_DETECT
   class CAutorun;
 }
 
-namespace PLAYLIST
+namespace KODI::PLAYLIST
 {
   class CPlayList;
 }
@@ -121,10 +120,10 @@ public:
   int  GetMessageMask() override;
   void OnApplicationMessage(KODI::MESSAGING::ThreadMessage* pMsg) override;
 
-  bool PlayMedia(CFileItem& item, const std::string& player, PLAYLIST::Id playlistId);
+  bool PlayMedia(CFileItem& item, const std::string& player, KODI::PLAYLIST::Id playlistId);
   bool ProcessAndStartPlaylist(const std::string& strPlayList,
-                               PLAYLIST::CPlayList& playlist,
-                               PLAYLIST::Id playlistId,
+                               KODI::PLAYLIST::CPlayList& playlist,
+                               KODI::PLAYLIST::Id playlistId,
                                int track = 0);
   bool PlayFile(CFileItem item,
                 const std::string& player,
@@ -219,7 +218,6 @@ protected:
 
   std::chrono::time_point<std::chrono::steady_clock> m_lastRenderTime;
   bool m_skipGuiRender = false;
-  std::optional<bool> m_guiRenderLastState;
 
   std::unique_ptr<MUSIC_INFO::CMusicInfoScanner> m_musicInfoScanner;
 

@@ -6,7 +6,6 @@ set(SOURCES ActorProtocol.cpp
             BitstreamConverter.cpp
             BitstreamReader.cpp
             BitstreamStats.cpp
-            BitstreamWriter.cpp
             BooleanLogic.cpp
             CharArrayParser.cpp
             CharsetConverter.cpp
@@ -51,7 +50,6 @@ set(SOURCES ActorProtocol.cpp
             PlayerUtils.cpp
             RecentlyAddedJob.cpp
             RegExp.cpp
-            rfft.cpp
             RingBuffer.cpp
             RssManager.cpp
             RssReader.cpp
@@ -88,7 +86,6 @@ set(HEADERS ActorProtocol.h
             BitstreamConverter.h
             BitstreamReader.h
             BitstreamStats.h
-            BitstreamWriter.h
             BooleanLogic.h
             CharArrayParser.h
             CharsetConverter.h
@@ -154,7 +151,6 @@ set(HEADERS ActorProtocol.h
             ProgressJob.h
             RecentlyAddedJob.h
             RegExp.h
-            rfft.h
             RingBuffer.h
             RssManager.h
             RssReader.h

@@ -41,6 +41,7 @@
 #include <memory>
 #include <mutex>
 
+using namespace KODI;
 using namespace KODI::GUILIB;
 using namespace KODI::GUILIB::GUIINFO;
 using namespace INFO;
@@ -1334,15 +1335,6 @@ const infomap weather[] =        {{ "isfetched",        WEATHER_IS_FETCHED },
 ///     @skinning_v17 **[New Boolean Condition]** \link System_HasPVRAddon
 ///     `System.HasPVRAddon`\endlink <p>
 ///   }
-///   \table_row3{   <b>`System.PVRCount`</b>,
-///                  \anchor System_PVRCount
-///                  _integer_,
-///     @return Number of PVR clients enabled.
-///     @note If a PVR is enabled but unreachable\, it is still counted.
-///     <p><hr>
-///     @skinning_v22 **[New Integer Value]** \link System_PVRCount `System.PVRCount`\endlink
-///     <p>
-///   }
 ///   \table_row3{   <b>`System.HasCMS`</b>,
 ///                  \anchor System_HasCMS
 ///                  _boolean_,
@@ -1984,7 +1976,6 @@ const infomap system_labels[] = {
     {"hascms", SYSTEM_HAS_CMS},
     {"privacypolicy", SYSTEM_PRIVACY_POLICY},
     {"haspvraddon", SYSTEM_HAS_PVR_ADDON},
-    {"pvrcount", SYSTEM_PVR_COUNT},
     {"addonupdatecount", SYSTEM_ADDON_UPDATE_COUNT},
     {"supportscpuusage", SYSTEM_SUPPORTS_CPU_USAGE},
     {"supportedhdrtypes", SYSTEM_SUPPORTED_HDR_TYPES},
@@ -3470,8 +3461,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.Cast`</b>,
 ///                  \anchor VideoPlayer_Cast
 ///                  _string_,
-///     @return A concatenated string of cast members of the current movie\, if it's in
-///     the database.
+///     @return A list of cast members\, separated by carriage returns.
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link VideoPlayer_Cast `VideoPlayer.Cast`\endlink
 ///     also supports EPG.
@@ -3480,8 +3470,8 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.CastAndRole`</b>,
 ///                  \anchor VideoPlayer_CastAndRole
 ///                  _string_,
-///     @return A concatenated string of cast members and roles of the current movie\,
-///     if it's in the database.
+///     @return A list of cast members and roles\, separated by carriage
+///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`VideoPlayer.Album`</b>,
@@ -3941,7 +3931,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///   \table_row3{   <b>`VideoPlayer.VideoVersionName`</b>,
 ///                  \anchor VideoPlayer_VideoVersionName
 ///                  _string_,
-///     @return String containing the version name of the currently playing video (movie) - empty if not a movie, version name is not set or not a version
+///     @return String containing the version name of the currently playing video (movie) - empty if not a movie\, version name is not set or not a version
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link VideoPlayer_VideoVersionName `VideoPlayer.VideoVersionName`\endlink
 ///   }
@@ -5874,8 +5864,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.Cast`</b>,
 ///                  \anchor ListItem_Cast
 ///                  _string_,
-///     @return A concatenated string of cast members of the currently selected
-///     movie\, for use in dialogvideoinfo.xml.
+///     @return A list of cast members\, separated by carriage returns.
 ///     <p><hr>
 ///     @skinning_v15 **[Infolabel Updated]** \link ListItem_Cast `ListItem.Cast`\endlink
 ///     also supports EPG.
@@ -5884,8 +5873,8 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.CastAndRole`</b>,
 ///                  \anchor ListItem_CastAndRole
 ///                  _string_,
-///     @return A concatenated string of cast members and roles of the currently
-///     selected movie\, for use in dialogvideoinfo.xml.
+///     @return A list of cast members and roles\, separated by carriage
+///     returns. Every cast/role combination is formatted 'cast' as 'role' where 'as' is localised.
 ///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.Studio`</b>,
@@ -6488,7 +6477,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///                  _string_,
 ///     @return From addon defined message text when it is marked as special condition inside repository.
 ///     <p><hr>
-///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleDesc `ListItem.AddonLifecycleDesc``\endlink
+///     @skinning_v19 **[New Infolabel]** \link ListItem_AddonLifecycleDesc `ListItem.AddonLifecycleDesc`\endlink
 ///     replaces `ListItem.AddonBroken`.
 ///     <p>
 ///   }
@@ -6910,7 +6899,7 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///   \table_row3{   <b>`ListItem.AlbumStatus`</b>,
 ///                  \anchor ListItem_AlbumStatus
 ///                  _string_,
-///     @return The Musicbrainz release status of the album (official, bootleg, promotion etc)
+///     @return The Musicbrainz release status of the album (official\, bootleg\, promotion etc)
 ///     <p><hr>
 ///     @skinning_v19 **[New Infolabel]** \link ListItem_AlbumStatus `ListItem.AlbumStatus`\endlink
 ///   }
@@ -6927,14 +6916,6 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return Link to a video of a song
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_SongVideoURL `ListItem.SongVideoURL`\endlink
-///   }
-///   \table_row3{   <b>`ListItem.BackendInstanceName`</b>,
-///                  \anchor ListItem_BackendInstanceName
-///                  _string_,
-///     @return The name used by the PVR client addon instance for the selected item.
-///     <p><hr>
-///     @skinning_v22 **[New Infolabel]** \link ListItem_BackendInstanceName `ListItem.BackendInstanceName`\endlink
-///     <p>
 ///   }
 ///   \table_row3{   <b>`ListItem.VideoWidth`</b>,
 ///                  \anchor ListItem_VideoWidth
@@ -6977,6 +6958,25 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return **True** when the selected item has video extras.
 ///     <p><hr>
 ///     @skinning_v21 **[New Infolabel]** \link ListItem_HasVideoExtras `ListItem.HasVideoExtras`\endlink
+///   }
+///   \table_row3{   <b>`ListItem.PVRClientName`</b>,
+///                  \anchor ListItem_PVRClientName
+///                  _string_,
+///     @return If selected item is of type PVR (recording\, timer\, EPG)\, the name of the PVR client
+///     add-on\, as specified by the add-on developer. Empty if theitem is not of type PVR.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRClientName `ListItem.PVRClientName`\endlink
+///     <p>
+///   }
+///   \table_row3{   <b>`ListItem.PVRInstanceName`</b>,
+///                  \anchor ListItem_PVRInstanceName
+///                  _string_,
+///     @return If selected item is of type PVR (recording\, timer\, EPG)\, the name of the instance
+///     of the PVR client add-on\, as specified by the user in the add-on settings. Empty if the
+///     PVR client add-on does not support multiple instances or item is not of type PVR.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRInstanceName `ListItem.PVRInstanceName`\endlink
+///     <p>
 ///   }
 /// \table_end
 ///
@@ -7199,7 +7199,8 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "isvideoextra",     LISTITEM_ISVIDEOEXTRA },
                                   { "videoversionname", LISTITEM_VIDEOVERSION_NAME },
                                   { "hasvideoextras",   LISTITEM_HASVIDEOEXTRAS },
-                                  { "backendinstancename", LISTITEM_BACKEND_INSTANCE_NAME },
+                                  { "pvrclientname",    LISTITEM_PVR_CLIENT_NAME },
+                                  { "pvrinstancename",  LISTITEM_PVR_INSTANCE_NAME },
 };
 // clang-format on
 
@@ -8208,10 +8209,20 @@ const infomap playlist[] =       {{ "length",           PLAYLIST_LENGTH },
 ///                  _string_,
 ///     @return The icon of the currently playing epg event\, if any.
 ///     <p><hr>
-///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR_EpgEventIcon`\endlink
+///     @skinning_v18 **[New Infolabel]** \link PVR_EpgEventIcon `PVR.EpgEventIcon`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`PVR.ClientCount`</b>,
+///                  \anchor PVR_ClientCount
+///                  _integer_,
+///     @return Number of PVR clients enabled.
+///     <p><hr>
+///     @skinning_v22 **[New Integer Value]** \link PVR_ClientCount `PVR.ClientCount`\endlink
+///     <p>
+///   }
+/// \table_end
 ///
+/// -----------------------------------------------------------------------------
 // clang-format off
 const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING },
                                   { "hastimer",                 PVR_HAS_TIMER },
@@ -8291,7 +8302,8 @@ const infomap pvr[] =            {{ "isrecording",              PVR_IS_RECORDING
                                   { "timeshiftprogressepgend",    PVR_TIMESHIFT_PROGRESS_EPG_END },
                                   { "timeshiftprogressbufferstart", PVR_TIMESHIFT_PROGRESS_BUFFER_START },
                                   { "timeshiftprogressbufferend", PVR_TIMESHIFT_PROGRESS_BUFFER_END },
-                                  { "epgeventicon",               PVR_EPG_EVENT_ICON }};
+                                  { "epgeventicon",               PVR_EPG_EVENT_ICON },
+                                  { "clientcount",                PVR_CLIENT_COUNT }};
 // clang-format on
 
 /// \page modules__infolabels_boolean_conditions
@@ -10532,14 +10544,14 @@ int CGUIInfoManager::TranslateSingleString(const std::string &strCondition, bool
           return ret;
         else
         {
-          PLAYLIST::Id playlistid = PLAYLIST::TYPE_NONE;
+          PLAYLIST::Id playlistid = PLAYLIST::Id::TYPE_NONE;
           if (StringUtils::EqualsNoCase(prop.param(), "video"))
-            playlistid = PLAYLIST::TYPE_VIDEO;
+            playlistid = PLAYLIST::Id::TYPE_VIDEO;
           else if (StringUtils::EqualsNoCase(prop.param(), "music"))
-            playlistid = PLAYLIST::TYPE_MUSIC;
+            playlistid = PLAYLIST::Id::TYPE_MUSIC;
 
-          if (playlistid != PLAYLIST::TYPE_NONE)
-            return AddMultiInfo(CGUIInfo(ret, playlistid, 1));
+          if (playlistid != PLAYLIST::Id::TYPE_NONE)
+            return AddMultiInfo(CGUIInfo(ret, static_cast<int>(playlistid), 1));
         }
       }
     }

@@ -89,6 +89,7 @@ option(ENABLE_INTERNAL_FFMPEG "Enable internal ffmpeg?" OFF)
 
 # These are built for all platforms not using system libs or disabled by user
 dependent_option(ENABLE_INTERNAL_CEC "Enable internal libcec?")
+dependent_option(ENABLE_INTERNAL_CURL "Enable internal libcurl?")
 dependent_option(ENABLE_INTERNAL_FLATBUFFERS "Enable internal flatbuffers?")
 dependent_option(ENABLE_INTERNAL_FMT "Enable internal fmt?")
 dependent_option(ENABLE_INTERNAL_NFS "Enable internal libnfs?")
@@ -117,8 +118,7 @@ if(UNIX)
   option(ENABLE_INTERNAL_GTEST "Enable internal gtest?" OFF)
   option(ENABLE_INTERNAL_UDFREAD "Enable internal udfread?" OFF)
 endif()
-# prefer kissfft from xbmc/contrib but let use system one on unices
-cmake_dependent_option(ENABLE_INTERNAL_KISSFFT "Enable internal kissfft?" ON "UNIX" ON)
+
 # System options
 if(NOT WIN32)
   option(WITH_ARCH              "build with given arch" OFF)
@@ -212,7 +212,6 @@ set(required_deps ASS>=0.15.0
                   Fstrcmp
                   HarfBuzz
                   Iconv
-                  KissFFT
                   LibDvd
                   Lzo2
                   OpenSSL>=1.1.0
