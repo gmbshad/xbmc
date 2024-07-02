@@ -5,9 +5,9 @@
 #
 # This will define the following target:
 #
-#   CEC::CEC - The libCEC library
+#   ${APP_NAME_LC}::CEC - The libCEC library
 
-if(NOT TARGET CEC::CEC)
+if(NOT TARGET ${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME})
   include(cmake/scripts/common/ModuleHelpers.cmake)
 
   macro(buildCEC)
@@ -42,7 +42,7 @@ if(NOT TARGET CEC::CEC)
                                     COMMAND ${INSTALL_NAME_TOOL} -id ${CEC_LIBRARY} ${CEC_LIBRARY})
     endif()
 
-    add_dependencies(cec P8Platform::P8Platform)
+    add_dependencies(cec ${APP_NAME_LC}::P8Platform)
   endmacro()
 
   # We only need to check p8-platform if we have any intention to build internal
@@ -51,7 +51,7 @@ if(NOT TARGET CEC::CEC)
     get_libversion_data("p8-platform" "target")
     find_package(P8Platform ${LIB_P8-PLATFORM_VER} MODULE QUIET REQUIRED)
     # Check if we want to force a build due to a dependency rebuild
-    get_property(LIB_FORCE_REBUILD TARGET P8Platform::P8Platform PROPERTY LIB_BUILD)
+    get_property(LIB_FORCE_REBUILD TARGET ${APP_NAME_LC}::P8Platform PROPERTY LIB_BUILD)
   endif()
 
   set(MODULE_LC cec)
@@ -85,9 +85,8 @@ if(NOT TARGET CEC::CEC)
 
       # CEC cmake config doesnt include INTERFACE_INCLUDE_DIRECTORIES
       find_path(CEC_INCLUDE_DIR NAMES libcec/cec.h libCEC/CEC.h
-                                HINTS ${DEPENDS_PATH}/include ${PC_CEC_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                HINTS ${DEPENDS_PATH}/include
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
       set(CEC_VERSION ${libcec_VERSION})
     else()
       find_package(PkgConfig)
@@ -97,13 +96,11 @@ if(NOT TARGET CEC::CEC)
       endif()
       find_library(CEC_LIBRARY_RELEASE NAMES cec
                                        HINTS ${DEPENDS_PATH}/lib ${PC_CEC_LIBDIR}
-                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                       NO_CACHE)
+                                       ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       find_path(CEC_INCLUDE_DIR NAMES libcec/cec.h libCEC/CEC.h
                                 HINTS ${DEPENDS_PATH}/include ${PC_CEC_INCLUDEDIR}
-                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG}
-                                NO_CACHE)
+                                ${${CORE_PLATFORM_LC}_SEARCH_CONFIG})
 
       if(PC_CEC_VERSION)
         set(CEC_VERSION ${PC_CEC_VERSION})
@@ -127,26 +124,26 @@ if(NOT TARGET CEC::CEC)
   if(CEC_FOUND)
     # cmake target and not building internal
     if(TARGET libcec::cec AND NOT TARGET cec)
-      add_library(CEC::CEC ALIAS libcec::cec)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS libcec::cec)
       # We need to append in case the cmake config already has definitions
       set_property(TARGET libcec::cec APPEND PROPERTY
-                                      INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC=1)
+                                             INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     # pkgconfig target found
     elseif(TARGET PkgConfig::PC_CEC)
-      add_library(CEC::CEC ALIAS PkgConfig::PC_CEC)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} ALIAS PkgConfig::PC_CEC)
       set_property(TARGET PkgConfig::PC_CEC APPEND PROPERTY
-                                            INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC=1)
+                                            INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     # building internal or no cmake config or pkgconfig
     else()
-      add_library(CEC::CEC UNKNOWN IMPORTED)
-      set_target_properties(CEC::CEC PROPERTIES
-                                     IMPORTED_LOCATION "${CEC_LIBRARY}"
-                                     INTERFACE_INCLUDE_DIRECTORIES "${CEC_INCLUDE_DIR}"
-                                     INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC=1)
+      add_library(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} UNKNOWN IMPORTED)
+      set_target_properties(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} PROPERTIES
+                                                                       IMPORTED_LOCATION "${CEC_LIBRARY}"
+                                                                       INTERFACE_INCLUDE_DIRECTORIES "${CEC_INCLUDE_DIR}"
+                                                                       INTERFACE_COMPILE_DEFINITIONS HAVE_LIBCEC)
     endif()
 
     if(TARGET cec)
-      add_dependencies(CEC::CEC cec)
+      add_dependencies(${APP_NAME_LC}::${CMAKE_FIND_PACKAGE_NAME} cec)
     endif()
 
     # Add internal build target when a Multi Config Generator is used
@@ -164,8 +161,5 @@ if(NOT TARGET CEC::CEC)
       endif()
       add_dependencies(build_internal_depends cec)
     endif()
-
-    set_property(GLOBAL APPEND PROPERTY INTERNAL_DEPS_PROP CEC::CEC)
-
   endif()
 endif()

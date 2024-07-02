@@ -2789,6 +2789,14 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 ///     @return The channel name of the radio programme that's currently playing (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`MusicPlayer.ChannelLogo`</b>,
+///                  \anchor MusicPlayer_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently playing radio channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link MusicPlayer_ChannelLogo `MusicPlayer.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`MusicPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor MusicPlayer_ChannelNumberLabel
 ///                  _string_,
@@ -2878,6 +2886,7 @@ const infomap musicpartymode[] = {{ "enabled",           MUSICPM_ENABLED },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
+// clang-format off
 const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "album",            MUSICPLAYER_ALBUM },
                                   { "artist",           MUSICPLAYER_ARTIST },
@@ -2912,6 +2921,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "playcount",        MUSICPLAYER_PLAYCOUNT },
                                   { "lastplayed",       MUSICPLAYER_LASTPLAYED },
                                   { "channelname",      MUSICPLAYER_CHANNEL_NAME },
+                                  { "channellogo",      MUSICPLAYER_CHANNEL_LOGO },
                                   { "channelnumberlabel", MUSICPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     MUSICPLAYER_CHANNEL_GROUP },
                                   { "dbid",             MUSICPLAYER_DBID },
@@ -2923,6 +2933,7 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
                                   { "totaldiscs",       MUSICPLAYER_TOTALDISCS },
                                   { "station",          MUSICPLAYER_STATIONNAME }
 };
+// clang-format on
 
 /// \page modules__infolabels_boolean_conditions
 /// \subsection modules__infolabels_boolean_conditions_Videoplayer Video player
@@ -3850,6 +3861,14 @@ const infomap musicplayer[] =    {{ "title",            MUSICPLAYER_TITLE },
 ///     @return The name of the currently tuned channel (PVR).
 ///     <p>
 ///   }
+///   \table_row3{   <b>`VideoPlayer.ChannelLogo`</b>,
+///                  \anchor VideoPlayer_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently playing TV channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link VideoPlayer_ChannelLogo `VideoPlayer.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`VideoPlayer.ChannelNumberLabel`</b>,
 ///                  \anchor VideoPlayer_ChannelNumberLabel
 ///                  _string_,
@@ -3996,6 +4015,7 @@ const infomap videoplayer[] =    {{ "title",            VIDEOPLAYER_TITLE },
                                   { "nextendtime",      VIDEOPLAYER_NEXT_ENDTIME },
                                   { "nextduration",     VIDEOPLAYER_NEXT_DURATION },
                                   { "channelname",      VIDEOPLAYER_CHANNEL_NAME },
+                                  { "channellogo",      VIDEOPLAYER_CHANNEL_LOGO },
                                   { "channelnumberlabel", VIDEOPLAYER_CHANNEL_NUMBER },
                                   { "channelgroup",     VIDEOPLAYER_CHANNEL_GROUP },
                                   { "hasepg",           VIDEOPLAYER_HAS_EPG },
@@ -5973,6 +5993,14 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @return The name of current selected TV channel in a container.
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.ChannelLogo`</b>,
+///                  \anchor ListItem_ChannelLogo
+///                  _string_,
+///     @return The path for the logo of the currently selected radio or TV channel\, if available (PVR).
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_ChannelLogo `ListItem.ChannelLogo`\endlink
+///     <p>
+///   }
 ///   \table_row3{   <b>`ListItem.VideoCodec`</b>,
 ///                  \anchor ListItem_VideoCodec
 ///                  _string_,
@@ -6978,6 +7006,15 @@ const infomap container_str[]  = {{ "property",         CONTAINER_PROPERTY },
 ///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRInstanceName `ListItem.PVRInstanceName`\endlink
 ///     <p>
 ///   }
+///   \table_row3{   <b>`ListItem.PVRGroupOrigin`</b>,
+///                  \anchor ListItem_PVRGroupOrigin
+///                  _string_,
+///     @return If selected item is of type PVR channel group, the creator (user, system, client) of
+///     the group.
+///     <p><hr>
+///     @skinning_v22 **[New Infolabel]** \link ListItem_PVRGroupOrigin `ListItem.PVRGroupOrigin`\endlink
+///     <p>
+///   }
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
@@ -7126,6 +7163,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "nextenddate",      LISTITEM_NEXT_ENDDATE },
                                   { "nextduration",     LISTITEM_NEXT_DURATION },
                                   { "channelname",      LISTITEM_CHANNEL_NAME },
+                                  { "channellogo",      LISTITEM_CHANNEL_LOGO },
                                   { "channelnumberlabel", LISTITEM_CHANNEL_NUMBER },
                                   { "channelgroup",     LISTITEM_CHANNEL_GROUP },
                                   { "hasepg",           LISTITEM_HAS_EPG },
@@ -7201,6 +7239,7 @@ const infomap listitem_labels[]= {{ "thumb",            LISTITEM_THUMB },
                                   { "hasvideoextras",   LISTITEM_HASVIDEOEXTRAS },
                                   { "pvrclientname",    LISTITEM_PVR_CLIENT_NAME },
                                   { "pvrinstancename",  LISTITEM_PVR_INSTANCE_NAME },
+                                  { "pvrgrouporigin",   LISTITEM_PVR_GROUP_ORIGIN },
 };
 // clang-format on
 
@@ -9238,14 +9277,6 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 ///     @note This is the value of the EXIF ImageDescription tag (hex code 0x010E).
 ///     <p>
 ///   }
-///   \table_row3{   <b>`Slideshow.EXIFSoftware`</b>,
-///                  \anchor Slideshow_EXIFSoftware
-///                  _string_,
-///     @return The name and version of the firmware used by the camera that took
-///     the current picture.
-///     @note This is the value of the EXIF Software tag (hex code 0x0131).
-///     <p>
-///   }
 ///   \table_row3{   <b>`Slideshow.EXIFTime`</b>,
 ///                  \anchor Slideshow_EXIFTime
 ///                  _string_,
@@ -9623,70 +9654,70 @@ const infomap rds[] =            {{ "hasrds",                   RDS_HAS_RDS },
 /// \table_end
 ///
 /// -----------------------------------------------------------------------------
-const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED },
-                                  { "isactive",               SLIDESHOW_ISACTIVE },
-                                  { "isvideo",                SLIDESHOW_ISVIDEO },
-                                  { "israndom",               SLIDESHOW_ISRANDOM },
-                                  { "filename",               SLIDESHOW_FILE_NAME },
-                                  { "path",                   SLIDESHOW_FILE_PATH },
-                                  { "filesize",               SLIDESHOW_FILE_SIZE },
-                                  { "filedate",               SLIDESHOW_FILE_DATE },
-                                  { "slideindex",             SLIDESHOW_INDEX },
-                                  { "resolution",             SLIDESHOW_RESOLUTION },
-                                  { "slidecomment",           SLIDESHOW_COMMENT },
-                                  { "colour",                 SLIDESHOW_COLOUR },
-                                  { "process",                SLIDESHOW_PROCESS },
-                                  { "exiftime",               SLIDESHOW_EXIF_DATE_TIME },
-                                  { "exifdate",               SLIDESHOW_EXIF_DATE },
-                                  { "longexiftime",           SLIDESHOW_EXIF_LONG_DATE_TIME },
-                                  { "longexifdate",           SLIDESHOW_EXIF_LONG_DATE },
-                                  { "exifdescription",        SLIDESHOW_EXIF_DESCRIPTION },
-                                  { "cameramake",             SLIDESHOW_EXIF_CAMERA_MAKE },
-                                  { "cameramodel",            SLIDESHOW_EXIF_CAMERA_MODEL },
-                                  { "exifcomment",            SLIDESHOW_EXIF_COMMENT },
-                                  { "exifsoftware",           SLIDESHOW_EXIF_SOFTWARE },
-                                  { "aperture",               SLIDESHOW_EXIF_APERTURE },
-                                  { "focallength",            SLIDESHOW_EXIF_FOCAL_LENGTH },
-                                  { "focusdistance",          SLIDESHOW_EXIF_FOCUS_DIST },
-                                  { "exposure",               SLIDESHOW_EXIF_EXPOSURE },
-                                  { "exposuretime",           SLIDESHOW_EXIF_EXPOSURE_TIME },
-                                  { "exposurebias",           SLIDESHOW_EXIF_EXPOSURE_BIAS },
-                                  { "exposuremode",           SLIDESHOW_EXIF_EXPOSURE_MODE },
-                                  { "flashused",              SLIDESHOW_EXIF_FLASH_USED },
-                                  { "whitebalance",           SLIDESHOW_EXIF_WHITE_BALANCE },
-                                  { "lightsource",            SLIDESHOW_EXIF_LIGHT_SOURCE },
-                                  { "meteringmode",           SLIDESHOW_EXIF_METERING_MODE },
-                                  { "isoequivalence",         SLIDESHOW_EXIF_ISO_EQUIV },
-                                  { "digitalzoom",            SLIDESHOW_EXIF_DIGITAL_ZOOM },
-                                  { "ccdwidth",               SLIDESHOW_EXIF_CCD_WIDTH },
-                                  { "orientation",            SLIDESHOW_EXIF_ORIENTATION },
-                                  { "supplementalcategories", SLIDESHOW_IPTC_SUP_CATEGORIES },
-                                  { "keywords",               SLIDESHOW_IPTC_KEYWORDS },
-                                  { "caption",                SLIDESHOW_IPTC_CAPTION },
-                                  { "author",                 SLIDESHOW_IPTC_AUTHOR },
-                                  { "headline",               SLIDESHOW_IPTC_HEADLINE },
-                                  { "specialinstructions",    SLIDESHOW_IPTC_SPEC_INSTR },
-                                  { "category",               SLIDESHOW_IPTC_CATEGORY },
-                                  { "byline",                 SLIDESHOW_IPTC_BYLINE },
-                                  { "bylinetitle",            SLIDESHOW_IPTC_BYLINE_TITLE },
-                                  { "credit",                 SLIDESHOW_IPTC_CREDIT },
-                                  { "source",                 SLIDESHOW_IPTC_SOURCE },
-                                  { "copyrightnotice",        SLIDESHOW_IPTC_COPYRIGHT_NOTICE },
-                                  { "objectname",             SLIDESHOW_IPTC_OBJECT_NAME },
-                                  { "city",                   SLIDESHOW_IPTC_CITY },
-                                  { "state",                  SLIDESHOW_IPTC_STATE },
-                                  { "country",                SLIDESHOW_IPTC_COUNTRY },
-                                  { "transmissionreference",  SLIDESHOW_IPTC_TX_REFERENCE },
-                                  { "iptcdate",               SLIDESHOW_IPTC_DATE },
-                                  { "urgency",                SLIDESHOW_IPTC_URGENCY },
-                                  { "countrycode",            SLIDESHOW_IPTC_COUNTRY_CODE },
-                                  { "referenceservice",       SLIDESHOW_IPTC_REF_SERVICE },
-                                  { "latitude",               SLIDESHOW_EXIF_GPS_LATITUDE },
-                                  { "longitude",              SLIDESHOW_EXIF_GPS_LONGITUDE },
-                                  { "altitude",               SLIDESHOW_EXIF_GPS_ALTITUDE },
-                                  { "timecreated",            SLIDESHOW_IPTC_TIMECREATED },
-                                  { "sublocation",            SLIDESHOW_IPTC_SUBLOCATION },
-                                  { "imagetype",              SLIDESHOW_IPTC_IMAGETYPE },
+const infomap slideshow[] = {
+    {"ispaused", SLIDESHOW_ISPAUSED},
+    {"isactive", SLIDESHOW_ISACTIVE},
+    {"isvideo", SLIDESHOW_ISVIDEO},
+    {"israndom", SLIDESHOW_ISRANDOM},
+    {"filename", SLIDESHOW_FILE_NAME},
+    {"path", SLIDESHOW_FILE_PATH},
+    {"filesize", SLIDESHOW_FILE_SIZE},
+    {"filedate", SLIDESHOW_FILE_DATE},
+    {"slideindex", SLIDESHOW_INDEX},
+    {"resolution", SLIDESHOW_RESOLUTION},
+    {"slidecomment", SLIDESHOW_COMMENT},
+    {"colour", SLIDESHOW_COLOUR},
+    {"process", SLIDESHOW_PROCESS},
+    {"exiftime", SLIDESHOW_EXIF_DATE_TIME},
+    {"exifdate", SLIDESHOW_EXIF_DATE},
+    {"longexiftime", SLIDESHOW_EXIF_LONG_DATE_TIME},
+    {"longexifdate", SLIDESHOW_EXIF_LONG_DATE},
+    {"exifdescription", SLIDESHOW_EXIF_DESCRIPTION},
+    {"cameramake", SLIDESHOW_EXIF_CAMERA_MAKE},
+    {"cameramodel", SLIDESHOW_EXIF_CAMERA_MODEL},
+    {"exifcomment", SLIDESHOW_EXIF_COMMENT},
+    {"aperture", SLIDESHOW_EXIF_APERTURE},
+    {"focallength", SLIDESHOW_EXIF_FOCAL_LENGTH},
+    {"focusdistance", SLIDESHOW_EXIF_FOCUS_DIST},
+    {"exposure", SLIDESHOW_EXIF_EXPOSURE},
+    {"exposuretime", SLIDESHOW_EXIF_EXPOSURE_TIME},
+    {"exposurebias", SLIDESHOW_EXIF_EXPOSURE_BIAS},
+    {"exposuremode", SLIDESHOW_EXIF_EXPOSURE_MODE},
+    {"flashused", SLIDESHOW_EXIF_FLASH_USED},
+    {"whitebalance", SLIDESHOW_EXIF_WHITE_BALANCE},
+    {"lightsource", SLIDESHOW_EXIF_LIGHT_SOURCE},
+    {"meteringmode", SLIDESHOW_EXIF_METERING_MODE},
+    {"isoequivalence", SLIDESHOW_EXIF_ISO_EQUIV},
+    {"digitalzoom", SLIDESHOW_EXIF_DIGITAL_ZOOM},
+    {"ccdwidth", SLIDESHOW_EXIF_CCD_WIDTH},
+    {"orientation", SLIDESHOW_EXIF_ORIENTATION},
+    {"supplementalcategories", SLIDESHOW_IPTC_SUP_CATEGORIES},
+    {"keywords", SLIDESHOW_IPTC_KEYWORDS},
+    {"caption", SLIDESHOW_IPTC_CAPTION},
+    {"author", SLIDESHOW_IPTC_AUTHOR},
+    {"headline", SLIDESHOW_IPTC_HEADLINE},
+    {"specialinstructions", SLIDESHOW_IPTC_SPEC_INSTR},
+    {"category", SLIDESHOW_IPTC_CATEGORY},
+    {"byline", SLIDESHOW_IPTC_BYLINE},
+    {"bylinetitle", SLIDESHOW_IPTC_BYLINE_TITLE},
+    {"credit", SLIDESHOW_IPTC_CREDIT},
+    {"source", SLIDESHOW_IPTC_SOURCE},
+    {"copyrightnotice", SLIDESHOW_IPTC_COPYRIGHT_NOTICE},
+    {"objectname", SLIDESHOW_IPTC_OBJECT_NAME},
+    {"city", SLIDESHOW_IPTC_CITY},
+    {"state", SLIDESHOW_IPTC_STATE},
+    {"country", SLIDESHOW_IPTC_COUNTRY},
+    {"transmissionreference", SLIDESHOW_IPTC_TX_REFERENCE},
+    {"iptcdate", SLIDESHOW_IPTC_DATE},
+    {"urgency", SLIDESHOW_IPTC_URGENCY},
+    {"countrycode", SLIDESHOW_IPTC_COUNTRY_CODE},
+    {"referenceservice", SLIDESHOW_IPTC_REF_SERVICE},
+    {"latitude", SLIDESHOW_EXIF_GPS_LATITUDE},
+    {"longitude", SLIDESHOW_EXIF_GPS_LONGITUDE},
+    {"altitude", SLIDESHOW_EXIF_GPS_ALTITUDE},
+    {"timecreated", SLIDESHOW_IPTC_TIMECREATED},
+    {"sublocation", SLIDESHOW_IPTC_SUBLOCATION},
+    {"imagetype", SLIDESHOW_IPTC_IMAGETYPE},
 };
 
 /// \page modules__infolabels_boolean_conditions
@@ -9866,6 +9897,7 @@ const infomap slideshow[] =      {{ "ispaused",               SLIDESHOW_ISPAUSED
 /// \subsection modules_rm_infolabels_booleans_v22 Kodi v22
 /// @skinning_v22 **[Removed Infolabels]** The following infolabels have been removed:
 ///   - `Player.Cutlist` - Please use \link Player_Editlist `Player.EditList`\endlink for the EDL list and \link Player_Cuts `Player.Cuts`\endlink for the cut markers
+///   - `Slideshow.EXIFSoftware`- This infolabel was broken (did nothing) in previous versions. It might be re-added later.
 ///
 /// <hr>
 /// \subsection modules_rm_infolabels_booleans_v21 Kodi v21 (Omega)
@@ -11216,7 +11248,7 @@ void CGUIInfoManager::Clear()
   {
     swapList.clear();
     for (auto &item : m_bools)
-      if (!item.unique())
+      if (item.use_count() > 1)
         swapList.insert(item);
     m_bools.swap(swapList);
   } while (swapList.size() != m_bools.size());

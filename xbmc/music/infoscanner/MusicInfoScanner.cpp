@@ -36,6 +36,7 @@
 #include "guilib/GUIKeyboardFactory.h"
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/MusicFileItemClassify.h"
 #include "music/MusicLibraryQueue.h"
@@ -43,6 +44,7 @@
 #include "music/MusicUtils.h"
 #include "music/tags/MusicInfoTag.h"
 #include "music/tags/MusicInfoTagLoaderFactory.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/AdvancedSettings.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
@@ -553,7 +555,7 @@ bool CMusicInfoScanner::DoScan(const std::string& strDirectory)
     if (m_bStop)
       break;
     // if we have a directory item (non-playlist) we then recurse into that folder
-    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !pItem->IsPlayList())
+    if (pItem->m_bIsFolder && !pItem->IsParentFolder() && !PLAYLIST::IsPlayList(*pItem))
     {
       std::string strPath=pItem->GetPath();
       if (!DoScan(strPath))
@@ -580,7 +582,8 @@ CInfoScanner::INFO_RET CMusicInfoScanner::ScanTags(const CFileItemList& items,
     if (CUtil::ExcludeFileOrFolder(pItem->GetPath(), regexps))
       continue;
 
-    if (pItem->m_bIsFolder || pItem->IsPlayList() || pItem->IsPicture() || MUSIC::IsLyrics(*pItem))
+    if (pItem->m_bIsFolder || PLAYLIST::IsPlayList(*pItem) || pItem->IsPicture() ||
+        MUSIC::IsLyrics(*pItem))
       continue;
 
     m_currentItem++;
@@ -1145,7 +1148,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
       if (!art->strThumb.empty())
         albumArt = art->strThumb;
       else
-        albumArt = CTextureUtils::GetWrappedImageURL(art->strFileName, "music");
+        albumArt = IMAGE_FILES::URLFromFile(art->strFileName, "music");
     }
 
     if (!albumArt.empty())
@@ -1161,7 +1164,7 @@ void CMusicInfoScanner::FindArtForAlbums(VECALBUMS &albums, const std::string &p
       for (auto& k : album.songs)
       {
         if (k.strThumb.empty() && !k.embeddedArt.Empty())
-          k.strThumb = CTextureUtils::GetWrappedImageURL(k.strFileName, "music");
+          k.strThumb = IMAGE_FILES::URLFromFile(k.strFileName, "music");
       }
     }
   }
@@ -1274,7 +1277,7 @@ int CMusicInfoScanner::GetPathHash(const CFileItemList &items, std::string &hash
     digest.Update((unsigned char *)&pItem->m_dwSize, sizeof(pItem->m_dwSize));
     KODI::TIME::FileTime time = pItem->m_dateTime;
     digest.Update((unsigned char*)&time, sizeof(KODI::TIME::FileTime));
-    if (MUSIC::IsAudio(*pItem) && !pItem->IsPlayList() && !pItem->IsNFO())
+    if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       count++;
   }
   hash = digest.Finalize();
@@ -2039,7 +2042,8 @@ bool CMusicInfoScanner::AddAlbumArtwork(CAlbum& album)
   {
     // When "prefer online album art" enabled and we have a thumb as embedded art
     // then replace it if we find a scraped cover
-    if (thumb != album.art.end() && StringUtils::StartsWith(thumb->second, "image://"))
+    if (thumb != album.art.end() &&
+        IMAGE_FILES::CImageFileURL(thumb->second).GetSpecialType() == "music")
       replaceThumb = true;
   }
 
@@ -2334,7 +2338,7 @@ int CMusicInfoScanner::CountFiles(const CFileItemList &items, bool recursive)
 
     if (recursive && pItem->m_bIsFolder)
       count+=CountFilesRecursively(pItem->GetPath());
-    else if (MUSIC::IsAudio(*pItem) && !pItem->IsPlayList() && !pItem->IsNFO())
+    else if (MUSIC::IsAudio(*pItem) && !PLAYLIST::IsPlayList(*pItem) && !pItem->IsNFO())
       count++;
   }
   return count;

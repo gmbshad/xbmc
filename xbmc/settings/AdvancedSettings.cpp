@@ -585,7 +585,7 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetFloat(pElement, "limiterhold", m_limiterHold, 0.0f, 100.0f);
     XMLUtils::GetFloat(pElement, "limiterrelease", m_limiterRelease, 0.001f, 100.0f);
     XMLUtils::GetUInt(pElement, "maxpassthroughoffsyncduration", m_maxPassthroughOffSyncDuration,
-                      10, 100);
+                      20, 80);
     XMLUtils::GetBoolean(pElement, "allowmultichannelfloat", m_AllowMultiChannelFloat);
     XMLUtils::GetBoolean(pElement, "superviseaudiodelay", m_superviseAudioDelay);
   }
@@ -1226,6 +1226,8 @@ void CAdvancedSettings::ParseSettingsFile(const std::string &file)
     XMLUtils::GetInt(pElement, "anisotropicfiltering", m_guiAnisotropicFiltering);
     XMLUtils::GetBoolean(pElement, "fronttobackrendering", m_guiFrontToBackRendering);
     XMLUtils::GetBoolean(pElement, "geometryclear", m_guiGeometryClear);
+    XMLUtils::GetBoolean(pElement, "asynctextureupload", m_guiAsyncTextureUpload);
+    XMLUtils::GetBoolean(pElement, "transparentvideolayout", m_guiVideoLayoutTransparent);
   }
 
   std::string seekSteps;

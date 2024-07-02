@@ -22,6 +22,7 @@
 #include "guilib/GUIWindowManager.h"
 #include "guilib/LocalizeStrings.h"
 #include "guilib/WindowIDs.h"
+#include "imagefiles/ImageFileURL.h"
 #include "interfaces/AnnouncementManager.h"
 #include "music/Artist.h"
 #include "music/MusicDatabase.h"
@@ -29,6 +30,7 @@
 #include "music/MusicLibraryQueue.h"
 #include "music/MusicThumbLoader.h"
 #include "music/tags/MusicInfoTag.h"
+#include "playlists/PlayListFileItemClassify.h"
 #include "settings/Settings.h"
 #include "settings/SettingsComponent.h"
 #include "utils/Digest.h"
@@ -448,7 +450,7 @@ PLT_MediaObject* CUPnPServer::Build(const std::shared_ptr<CFileItem>& item,
       }
     }
     // all playlist types are folders
-    else if (item->IsPlayList() || item->IsSmartPlayList())
+    else if (PLAYLIST::IsPlayList(*item) || PLAYLIST::IsSmartPlayList(*item))
     {
       item->m_bIsFolder = true;
     }
@@ -1505,7 +1507,7 @@ NPT_Result CUPnPServer::ServeFile(const NPT_HttpRequest& request,
 
   if (URIUtils::IsURL(static_cast<const char*>(file_path)))
   {
-    CURL url(CTextureUtils::UnwrapImageURL(static_cast<const char*>(file_path)));
+    CURL url(IMAGE_FILES::ToCacheKey(static_cast<const char*>(file_path)));
     std::string disp = "inline; filename=\"" + URIUtils::GetFileName(url) + "\"";
     response.GetHeaders().SetHeader("Content-Disposition", disp.c_str());
   }

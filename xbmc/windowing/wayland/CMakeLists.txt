@@ -49,16 +49,16 @@ set(HEADERS Connection.h
             WinSystemWayland.h
             XkbcommonKeymap.h)
 
-if(TARGET EGL::EGL)
+if(TARGET ${APP_NAME_LC}::EGL)
   list(APPEND SOURCES WinSystemWaylandEGLContext.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContext.h)
 endif()
 
-if(TARGET OpenGL::GL)
+if(TARGET ${APP_NAME_LC}::OpenGl)
   list(APPEND SOURCES WinSystemWaylandEGLContextGL.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContextGL.h)
 endif()
-if(TARGET OpenGL::GLES)
+if(TARGET ${APP_NAME_LC}::OpenGLES)
   list(APPEND SOURCES WinSystemWaylandEGLContextGLES.cpp)
   list(APPEND HEADERS WinSystemWaylandEGLContextGLES.h)
 endif()
