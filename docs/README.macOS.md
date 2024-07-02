@@ -225,7 +225,7 @@ OR
 
 (3) Build a specific group of add-ons:
 ```
-make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="pvr.*"
+make -j$(getconf _NPROCESSORS_ONLN) -C tools/depends/target/binary-addons ADDONS="filesystem.* audioencoder.* pvr.iptv-simple games.libretro"
 ```
 For additional information on regular expression usage for ADDONS_TO_BUILD, view ADDONS_TO_BUILD section located at [Kodi add-ons CMake based buildsystem](../cmake/addons/README.md)
 
